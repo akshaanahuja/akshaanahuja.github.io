@@ -1,16 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Portfolio</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Akshaan Ahuja CS180 Portfolio</title>
+  <style>
+    /* Global styles */
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #090013, #0b0017, black);
+      color: #f3f3f3;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      background: linear-gradient(90deg, #ff006a, #a21caf, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(255, 0, 106, 0.3);
+    }
+
+    /* Neon button */
+    .neon-btn {
+      display: inline-block;
+      padding: 0.9rem 2rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: white;
+      background: radial-gradient(circle at top left, #a21caf 0%, #7e22ce 40%, #ef4444 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 0.75rem;
+      text-decoration: none;
+      box-shadow: 
+        0 0 15px rgba(255, 0, 106, 0.6),
+        0 0 25px rgba(126, 34, 206, 0.6),
+        0 0 35px rgba(239, 68, 68, 0.5);
+      transition: all 0.2s ease-in-out;
+    }
+
+    .neon-btn:hover {
+      transform: scale(1.05);
+      filter: brightness(1.15) saturate(1.1);
+      box-shadow: 
+        0 0 20px rgba(255, 0, 106, 0.8),
+        0 0 30px rgba(126, 34, 206, 0.7),
+        0 0 40px rgba(239, 68, 68, 0.7);
+    }
+  </style>
 </head>
 <body>
-    <h1>Welcome to My CS180 Portfolio!</h1>
-    <a href="./1/index.html">Project 1</a>
+  <h1>Welcome to Akshaan Ahuja's CS180 Portfolio.</h1>
+  <a href="./1/index.html" class="neon-btn">Project 1</a>
 </body>
 </html>
