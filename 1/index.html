@@ -6,17 +6,15 @@
   <style>
     /* Global styles */
     body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #090013, #0b0017, black);
-      color: #f3f3f3;
-      text-align: center;
-    }
+        margin: 0;
+        min-height: 100vh;         /* allows page to grow & scroll */
+        /* display: block; */       /* default – remove flex centering */
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, #090013, #0b0017, black);
+        color: #f3f3f3;
+        text-align: center;
+        padding: 2rem 1rem;         /* gives breathing room at the top */
+}
 
     h1 {
       font-size: 2.5rem;
