@@ -58,7 +58,10 @@
 <body>
   <h1>Project 0</h1>
   <h2>Task 1</h2>
-  Here we explore how close up photos distort some facial features (ears, nose) whereas further photos using zoom tend to preserve facial features. 
+  <p class="description">
+    Here we explore how close up photos distort some facial features (ears, nose) 
+    whereas further photos using zoom tend to preserve facial features. 
+  </p>
   <div class="image-row">
     <img src="Shaz1.jpg" alt="Shaz1">
     <img src="Shaz2.jpg" alt="Shaz2">
@@ -81,6 +84,36 @@
     }
   </style>
   <h2>Task 2</h2>
+  <p class="description">
+    Here we explore a similar trend but on landscape scenes. As we can see in the first image, the Amazon Truck appears flat. 
+  </p>
+  <div class="image-row">
+    <img src="Amazon1.jpg" alt="Amazon1">
+    <img src="Amazon2.jpg" alt="Amazon2">
+  </div>
+  <p class="description">
+    Here is another example of the same trend. 
+  </p>
+  <div class="image-row">
+    <img src="BenAnsh1.jpg" alt="BenAnsh1">
+    <img src="BenAnsh2.jpg" alt="BenAnsh2">
+  </div>
+
+  
+  <style>
+    .image-row {
+      display: flex;
+      justify-content: center; /* centers images horizontally */
+      gap: 10px; /* space between images */
+      margin-top: 2rem;
+    }
+  
+    .image-row img {
+      max-width: 200px; /* set image size */
+      border-radius: 8px; /* optional rounded corners */
+      box-shadow: 0 0 15px rgba(255, 0, 106, 0.6); /* subtle neon glow */
+    }
+    </style>
   <h2>Task 3</h2>
 </body>
 </html>
