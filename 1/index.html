@@ -45,6 +45,7 @@
       transition: all 0.2s ease-in-out;
     }
 
+
     .neon-btn:hover {
       transform: scale(1.05);
       filter: brightness(1.15) saturate(1.1);
@@ -57,63 +58,58 @@
 </head>
 <body>
   <h1>Project 0</h1>
-  <h2>Task 1</h2>
-  <p class="description">
-    Here we explore how close up photos distort some facial features (ears, nose) 
-    whereas further photos using zoom tend to preserve facial features. 
-  </p>
-  <div class="image-row">
-    <img src="Shaz1.jpg" alt="Shaz1">
-    <img src="Shaz2.jpg" alt="Shaz2">
-    <img src="Shaz3.jpg" alt="Shaz3">
-    <img src="Shaz4.jpg" alt="Shaz4">
-  </div>
+  <section id="task1">
+    <h2>Task 1</h2>
+    <p class="description">Here we explore how close up photos distort some facial features (ears, nose) 
+        whereas further photos using zoom tend to preserve facial features. </p>
+    <div class="image-row">
+      <img src="Shaz1.jpg" alt="Shaz1">
+      <img src="Shaz2.jpg" alt="Shaz2">
+      <img src="Shaz3.jpg" alt="Shaz3">
+      <img src="Shaz4.jpg" alt="Shaz4">
+    </div>
+  </section>
+  
+  <section id="task2">
+    <h2>Task 2</h2>
+    <p class="description">Here we explore a similar trend but on landscape scenes. As we can see in the first image, the Amazon Truck appears flat.
+        This is the photo where we have increased distance to the objects and increased the zoom of the camera, similar to the flatter images of the face above. The second image
+        shows the distorted Amazon truck, due to the no zoom and close up distance to the objects. 
+    </p>
+    <div class="image-row">
+      <img src="Amazon1.jpg" alt="Amazon1">
+      <img src="Amazon2.jpg" alt="Amazon2">
+    </div>
+    <p class="description">Here is another example of the same trend. 
+    </p>
+    <div class="image-row">
+        <img src="BenAnsh1.jpg" alt="BenAnsh1">
+        <img src="BenAnsh2.jpg" alt="BenAnsh2">
+      </div>
+  </section>
   
   <style>
+    /* shared layout */
     .image-row {
       display: flex;
-      justify-content: center; /* centers images horizontally */
-      gap: 10px; /* space between images */
+      justify-content: center;
+      gap: 10px;
       margin-top: 2rem;
     }
   
-    .image-row img {
-      max-width: 200px; /* set image size */
-      border-radius: 8px; /* optional rounded corners */
-      box-shadow: 0 0 15px rgba(255, 0, 106, 0.6); /* subtle neon glow */
+    /* task-specific rules */
+    #task1 .image-row img {
+      max-width: 200px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(255, 0, 106, 0.6);
+    }
+  
+    #task2 .image-row img {
+      max-width: 300px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(4, 0, 255, 0.6);
     }
   </style>
-  <h2>Task 2</h2>
-  <p class="description">
-    Here we explore a similar trend but on landscape scenes. As we can see in the first image, the Amazon Truck appears flat. 
-  </p>
-  <div class="image-row">
-    <img src="Amazon1.jpg" alt="Amazon1">
-    <img src="Amazon2.jpg" alt="Amazon2">
-  </div>
-  <p class="description">
-    Here is another example of the same trend. 
-  </p>
-  <div class="image-row">
-    <img src="BenAnsh1.jpg" alt="BenAnsh1">
-    <img src="BenAnsh2.jpg" alt="BenAnsh2">
-  </div>
-
-  
-  <style>
-    .image-row {
-      display: flex;
-      justify-content: center; /* centers images horizontally */
-      gap: 10px; /* space between images */
-      margin-top: 2rem;
-    }
-  
-    .image-row img {
-      max-width: 300px; /* set image size */
-      border-radius: 8px; /* optional rounded corners */
-      box-shadow: 0 0 15px rgba(4, 0, 255, 0.6); /* subtle neon glow */
-    }
-    </style>
   <h2>Task 3</h2>
 </body>
 </html>
