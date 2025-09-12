@@ -149,22 +149,22 @@
     </p>
 
     <!-- ===================== 1) SINGLE-SCALE ALIGNMENT ===================== -->
-    <h2>1) Single-Scale Alignment (SSD/L2) <span class="badge">No visible defects: cathedral, tobolsk, monastery</span></h2>
+    <h2>1) Single-Scale Alignment (SSD/L2) <span class="badge">3 Images</span></h2>
 
     <div class="panel two-col">
       <div>
         <h4>Approach</h4>
         <p>
-          I align the R and G channels to B by brute-force search over integer displacements
-          \((dx, dy)\in[-30,30]\). Before scoring, I crop ~10% off all sides to avoid border artifacts.
+          I align the R and G channels to B by brute-force search over a range of integer displacements
+          \((shiftx, shifty)\in[-15,15]\). Before scoring, I crop a harcoded amount of 35 pixels off all sides to avoid border artifacts.
           The score is the **L2/SSD** between brightness-normalized patches:
         </p>
         <pre>
-SSD(B, C; dx,dy) = Σ (B_crop(x,y) - C_crop(x+dx, y+dy))²
+SSD(ImgA, ImgB; shiftx,shifty) = Σ (ImgA_crop(x,y) - ImgB_crop(x+shiftx, y+shifty))²
         </pre>
         <p>
-          I choose the displacement minimizing SSD for each channel, then stack as <code>[B, G*, R*]</code>.
-          This baseline works well for the smaller JPEGs.
+          I choose the displacement minimizing SSD for each channel, then stack as <code>[R*, G*, B]</code>.
+          This baseline works well for the smaller JPGs due to the low-res nature of the images. 
         </p>
       </div>
       <div>
@@ -172,7 +172,7 @@ SSD(B, C; dx,dy) = Σ (B_crop(x,y) - C_crop(x+dx, y+dy))²
         <ul>
           <li>Search window: radius 30 px</li>
           <li>Reference: Blue channel (B)</li>
-          <li>Pre-processing: mean/variance normalization; border crop</li>
+          <li>Border crop (hard coded 35 pixels each border)</li>
           <li>Output: displacements per channel + visual inspection</li>
         </ul>
       </div>
@@ -182,15 +182,15 @@ SSD(B, C; dx,dy) = Σ (B_crop(x,y) - C_crop(x+dx, y+dy))²
     <div class="grid-3">
       <figure class="card">
         <img src="results/cathedral_exhaustive_ssd.jpg" alt="cathedral_exhaustive_ssd">
-        <input class="caption-input" type="text" placeholder="cathedral — Displacement: R (12, 3), G (5, 2)" />
+        <input class="caption-input" type="text" placeholder="Displacement: R (12, 3), G (5, 2)" />
       </figure>
       <figure class="card">
         <img src="results/tobolsk_exhaustive_ssd.jpg" alt="tobolsk_exhaustive_ssd">
-        <input class="caption-input" type="text" placeholder="tobolsk — Displacement: R (6, 3), G (3, 3)" />
+        <input class="caption-input" type="text" placeholder="Displacement: R (6, 3), G (3, 3)" />
       </figure>
       <figure class="card">
         <img src="results/monastery_exhaustive_ssd.jpg" alt="monastery_exhaustive_ssd">
-        <input class="caption-input" type="text" placeholder="monastery — Displacement: R (3, 2), G (-3, 2)" />
+        <input class="caption-input" type="text" placeholder="Displacement: R (3, 2), G (-3, 2)" />
       </figure>
     </div>
 
@@ -200,51 +200,24 @@ SSD(B, C; dx,dy) = Σ (B_crop(x,y) - C_crop(x+dx, y+dy))²
     <div class="panel">
       <h4>Motivation</h4>
       <p>
-        High-resolution TIFFs make brute-force search too slow and sensitive to local optima. I use a
-        **Gaussian image pyramid** (coarse→fine) with **NCC/L2** scoring. At coarse levels, large motions
-        become small; I refine displacements as I upsample back to full resolution.
+        High-resolution TIFs make brute-force search too slow and sensitive to local optima. We cannot efficiently hardcode a searchable range of pixels for images as large as we are dealing with. 
+        I use a
+        **Gaussian image pyramid** (coarse→fine) with NCC scoring. At coarse levels, large motions
+        become small; I refine displacements as I upsample back to full resolution. NCC Scoring takes the dot product between two normalized vectors. These vectors represent rows of pixels that we can check the difference between. We are trying to maximize NCC. 
+        In addition, I alter the image metric that we are trying to NCC maximize. I switch from using Pixel Brightness to using Sobel Edge detection. 
+        The Sobel method computes the
+        image-intensity gradient by convolving over the individual color channel in the x and then y direction, computing the derivatives and uses the gradient magnitude for robust matching and accurate alignment.
       </p>
       <h4>Scoring (NCC)</h4>
-      <pre>
-Let B and C be zero-mean, unit-variance cropped patches.
-NCC(B, C; dx,dy) = ( Σ B(x,y) · C(x+dx, y+dy) ) / (N)  ∈ [-1, 1]
-Best alignment maximizes NCC (or minimizes -NCC).
-      </pre>
-      <h4>Algorithm (coarse → fine)</h4>
-      <pre>
-Build pyramid for B, G, R with scale factor s=2, levels L.
-dG = (0,0); dR = (0,0)
-for ℓ = L ... 0:                    # top (small) → base (full res)
-  Bg, Gg, Rg = B[ℓ], G[ℓ], R[ℓ]
-  # refine around upscaled displacement
-  for C in {Gg, Rg}:
-    best = argmax_{(dx,dy)∈[-r,r]} NCC( crop(Bg), crop(shift(C, dC + (dx,dy))) )
-    dC = 2*dC + best                 # upscale displacement for next (finer) level
-Return displacements dG, dR
-      </pre>
       <div class="two-col">
         <div>
-          <h4>Parameters</h4>
-          <ul>
-            <li>Levels: 5 (downsample ×2 each level)</li>
-            <li>Crop: ~10% border at each level</li>
-            <li>Refinement window per level: r = 5–7 px</li>
-            <li>Similarity: NCC (primary) / SSD (sanity check)</li>
-            <li>Optional: Sobel magnitude pre-filter for robustness to illumination</li>
-          </ul>
         </div>
         <div>
-          <h4>Outcome & Presentation</h4>
-          <ul>
-            <li><strong>Result quality:</strong> ≤ 1/14 images show minor defects</li>
-            <li><strong>Clarity:</strong> Method, equations, and parameters documented</li>
-            <li><strong>Diagnostics:</strong> Displacements reported under each result</li>
-          </ul>
         </div>
       </div>
     </div>
 
-    <h3>Emir: Brightness vs Edge-Aware (Sobel + NCC)</h3>
+    <h3>Emir: Pixel Brightness vs Edge Detection (Sobel + NCC) with Image Pyramid Speedup for Large TIF Images</h3>
     <div class="pair-2">
       <figure class="card">
         <img src="results/emir_pyramid_ncc.jpg" alt="emir_pyramid_ncc">
@@ -256,7 +229,7 @@ Return displacements dG, dR
       </figure>
     </div>
 
-    <h3>Remaining Results (Multi-Scale NCC/L2)</h3>
+    <h3>Remaining Results (Multi-Scale NCC + Sobel Edge Detection)</h3>
     <div class="grid-3">
       <figure class="card">
         <img src="results/church_sobel_ncc.jpg" alt="church_sobel_ncc">
@@ -306,28 +279,6 @@ Return displacements dG, dR
         <img src="results/myown2.jpg" alt="myown2">
         <input class="caption-input" type="text" placeholder="myown2 — R (66, 15), G (22, 19)" />
       </figure>
-    </div>
-
-    <!-- Compact rubric summary card to make scoring easy -->
-    <h2>Rubric Summary (for the reader)</h2>
-    <div class="panel">
-      <table>
-        <tr>
-          <th>Section</th>
-          <th>Results</th>
-          <th>Presentation</th>
-        </tr>
-        <tr>
-          <td>Single-Scale (SSD/L2)</td>
-          <td>cathedral / tobolsk / monastery: <strong>No visible defects</strong></td>
-          <td>Thorough approach, equations, parameters, and documentation</td>
-        </tr>
-        <tr>
-          <td>Multi-Scale Pyramid (NCC / L2)</td>
-          <td>≤ 1 alignment defect across 14 images</td>
-          <td>Step-by-step explanation, NCC formula, pyramid algorithm & parameters</td>
-        </tr>
-      </table>
     </div>
   </div>
 </body>
