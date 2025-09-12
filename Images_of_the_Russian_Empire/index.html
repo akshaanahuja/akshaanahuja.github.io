@@ -90,8 +90,9 @@
 <body>
   <div class="wrap">
     <h1>Project 1 — Results</h1>
+    <h2>In Project 1, we explore the Idea of Image Processing, practicing on the Prokudin-Gorskii photo collection, depicting the Russian Empire in a series of images. Each image has 3 versions, each taken with a different color filter on them. When overlayed properly, we can colorize the once grayscale image. </h2>
     <h3>Below, we use an exhaustive search radius of 30 pixels to find best alignments, checking alignment score iteratively. We use the Sum of Squared Differences value to "judge" the quality of the image alignment. This represents the average of the differences between pixel brightness values of individual color channels across the whole image. We are able to run this exhaustive approach on these images because they are not very high resolution.</h3>
-    <p class="subtitle">Top row shows <em>cathedral</em>, <em>tobolsk</em>, and <em>monastery</em>. Use the textbox below to describe the remaining results; add labels beneath each image as needed.</p>
+    <p class="subtitle">Top row shows <em>cathedral</em>, <em>tobolsk</em>, and <em>monastery</em></p>
 
     <!-- GRID -->
 
@@ -113,12 +114,22 @@
       </figure>
 
       <!-- Full-width description box for images BELOW the first row -->
-      <div class="row-note">
-        <textarea placeholder="Below we use Sobel Edge Detectors instead of checking the differences between pixel brightness levels. This allows for a more robust search and more accurate image alignments. 
-        We use OpenCV's Sobel operator to convolve over the images, making sure to crop the edges when we are checking the differences in order for NCC to focus on the middle areas of the image that matter the most. OpenCV's Sobel operator convolves over the channel in the x direction and y direction and then are combined together to find the magnitude of the gradient. This gradient I mention is the image-intensity gradient. 
-        Because we are now dealing with high resolution tif images, we need to implement a Gaussian Pyramid speedup scheme, where we recursively downscale the images, find an optimal image alignment among the color channels at a small scale, and then as we pop back up the recursive stack, rescale the displacements we found. As we scale back up, at each level we run a fine-grain exhaustive search at that level to make sure our displacement is as accurate as possible.
-        The results below display my algorithms outputs of using Sobel + NCC with a Gaussian Pyramid speedup scheme for efficient runtime."></textarea>
-      </div>
+      <h3>Below, we can see the difference between using pixel brightness (as we are doing above) to determine optimal alignment versus using an edge detector such as the Sobel edge detector. I explain the Sobel Edge Detector below. On the left, we have the Emir aligned using Pixel Brightness. On the right, we have the Emir aligned using Edge Detection. </h3>
+      <figure class="card">
+        <img src="results/church_pyramid_ncc.jpg" alt="church_sobel_ncc">
+        <input class="caption-input" type="text" placeholder="Displacement: R (73, 17), G (0, 7)" />
+      </figure>
+      <figure class="card">
+        <img src="results/emir_sobel_ncc.jpg" alt="emir_sobel_ncc">
+        <input class="caption-input" type="text" placeholder="Displacement: R (107, 40), G (49, 23)" />
+      </figure>
+
+     
+        <h3>Below we use Sobel Edge Detectors instead of checking the differences between pixel brightness levels. This allows for a more robust search and more accurate image alignments. 
+            We use OpenCV's Sobel operator to convolve over the images, making sure to crop the edges when we are checking the differences in order for NCC to focus on the middle areas of the image that matter the most. OpenCV's Sobel operator convolves over the channel in the x direction and y direction and then are combined together to find the magnitude of the gradient. This gradient I mention is the image-intensity gradient. 
+            Because we are now dealing with high resolution tif images, we need to implement a Gaussian Pyramid speedup scheme, where we recursively downscale the images, find an optimal image alignment among the color channels at a small scale, and then as we pop back up the recursive stack, rescale the displacements we found. As we scale back up, at each level we run a fine-grain exhaustive search at that level to make sure our displacement is as accurate as possible.
+            The results below display my algorithms outputs of using Sobel + NCC with a Gaussian Pyramid speedup scheme for efficient runtime</h3>
+    
 
       <!-- Remaining images (3-across, auto-wrapping) -->
       <figure class="card">
