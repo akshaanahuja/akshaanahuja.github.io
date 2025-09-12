@@ -144,8 +144,7 @@
     <h1>CS180 Project 1 — Colorizing the Prokudin-Gorskii Collection</h1>
     <p class="lead">
       Each scene has three plates (B, G, R) taken with different color filters. The task is to align the
-      channels and composite a color image. Below I document a single-scale SSD baseline and a multi-scale
-      pyramid approach with NCC/L2, including formulas, parameters, and qualitative results.
+      channels and composite a color image. Each scene has three grayscale plates taken with different color filters. With proper alignment and compositing, we can render a color image.
     </p>
 
     <!-- ===================== 1) SINGLE-SCALE ALIGNMENT ===================== -->
@@ -170,7 +169,7 @@ SSD(ImgA, ImgB; shiftx,shifty) = Σ (ImgA_crop(x,y) - ImgB_crop(x+shiftx, y+shif
       <div>
         <h4>Key Details</h4>
         <ul>
-          <li>Search window: radius 30 px</li>
+          <li>Search window: [-15, 15] px</li>
           <li>Reference: Blue channel (B)</li>
           <li>Border crop (hard coded 35 pixels each border)</li>
           <li>Output: displacements per channel + visual inspection</li>
@@ -195,7 +194,7 @@ SSD(ImgA, ImgB; shiftx,shifty) = Σ (ImgA_crop(x,y) - ImgB_crop(x+shiftx, y+shif
     </div>
 
     <!-- ===================== 2) MULTI-SCALE PYRAMID (NCC / L2) ===================== -->
-    <h2>2) Multi-Scale Pyramid Alignment (NCC / L2) <span class="badge">≤ 1 defect across 14 images</span></h2>
+    <h2>2) Multi-Scale Pyramid Alignment (NCC / L2)</h2>
 
     <div class="panel">
       <h4>Motivation</h4>
@@ -208,7 +207,6 @@ SSD(ImgA, ImgB; shiftx,shifty) = Σ (ImgA_crop(x,y) - ImgB_crop(x+shiftx, y+shif
         The Sobel method computes the
         image-intensity gradient by convolving over the individual color channel in the x and then y direction, computing the derivatives and uses the gradient magnitude for robust matching and accurate alignment.
       </p>
-      <h4>Scoring (NCC)</h4>
       <div class="two-col">
         <div>
         </div>
@@ -233,51 +231,51 @@ SSD(ImgA, ImgB; shiftx,shifty) = Σ (ImgA_crop(x,y) - ImgB_crop(x+shiftx, y+shif
     <div class="grid-3">
       <figure class="card">
         <img src="results/church_sobel_ncc.jpg" alt="church_sobel_ncc">
-        <input class="caption-input" type="text" placeholder="church — R (57, -14), G (25, -6)" />
+        <input class="caption-input" type="text" placeholder="R (57, -14), G (25, -6)" />
       </figure>
       <figure class="card">
         <img src="results/harvesters_sobel_ncc.jpg" alt="harvesters_sobel_ncc">
-        <input class="caption-input" type="text" placeholder="harvesters — R (116, 4), G (60, 17)" />
+        <input class="caption-input" type="text" placeholder="R (116, 4), G (60, 17)" />
       </figure>
       <figure class="card">
         <img src="results/icon_sobel_ncc.jpg" alt="icon_sobel_ncc">
-        <input class="caption-input" type="text" placeholder="icon — R (90, 23), G (42, 17)" />
+        <input class="caption-input" type="text" placeholder=" R (90, 23), G (42, 17)" />
       </figure>
       <figure class="card">
         <img src="results/italil_sobel_ncc.jpg" alt="italil_sobel_ncc">
-        <input class="caption-input" type="text" placeholder="italil — R (76, 35), G (39, 22)" />
+        <input class="caption-input" type="text" placeholder=" R (76, 35), G (39, 22)" />
       </figure>
       <figure class="card">
         <img src="results/lastochikino_sobel_ncc.jpg" alt="lastochikino_sobel_ncc">
-        <input class="caption-input" type="text" placeholder="lastochikino — R (76, -8), G (-3, -1)" />
+        <input class="caption-input" type="text" placeholder="R (76, -8), G (-3, -1)" />
       </figure>
       <figure class="card">
         <img src="results/lugano_sobel_ncc.jpg" alt="lugano_sobel_ncc">
-        <input class="caption-input" type="text" placeholder="lugano — R (91, -20), G (41, -10)" />
+        <input class="caption-input" type="text" placeholder="R (91, -20), G (41, -10)" />
       </figure>
       <figure class="card">
         <img src="results/melons_sobel_ncc.jpg" alt="melons_sobel_ncc">
-        <input class="caption-input" type="text" placeholder="melons — R (185, 10), G (78, 5)" />
+        <input class="caption-input" type="text" placeholder="R (185, 10), G (78, 5)" />
       </figure>
       <figure class="card">
         <img src="results/self_portrait_sobel_ncc.jpg" alt="self_portrait_sobel_ncc">
-        <input class="caption-input" type="text" placeholder="self_portrait — R (176, 37), G (79, 30)" />
+        <input class="caption-input" type="text" placeholder="R (176, 37), G (79, 30)" />
       </figure>
       <figure class="card">
         <img src="results/siren_sobel_ncc.jpg" alt="siren_sobel_ncc">
-        <input class="caption-input" type="text" placeholder="siren — R (86, -19), G (48, -8)" />
+        <input class="caption-input" type="text" placeholder="R (86, -19), G (48, -8)" />
       </figure>
       <figure class="card">
         <img src="results/three_generations_sobel_ncc.jpg" alt="three_generations_sobel_ncc">
-        <input class="caption-input" type="text" placeholder="three_generations — R (111, 8), G (54, 0)" />
+        <input class="caption-input" type="text" placeholder=" R (111, 8), G (54, 0)" />
       </figure>
       <figure class="card">
         <img src="results/myown1.jpg" alt="myown1">
-        <input class="caption-input" type="text" placeholder="myown1 — R (107, -10), G (54, -5)" />
+        <input class="caption-input" type="text" placeholder="R (107, -10), G (54, -5)" />
       </figure>
       <figure class="card">
         <img src="results/myown2.jpg" alt="myown2">
-        <input class="caption-input" type="text" placeholder="myown2 — R (66, 15), G (22, 19)" />
+        <input class="caption-input" type="text" placeholder="R (66, 15), G (22, 19)" />
       </figure>
     </div>
   </div>
