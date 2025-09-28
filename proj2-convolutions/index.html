@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project 2: Convolutions - Image Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+        }
+        .image-section {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            padding: 24px;
+            margin-bottom: 32px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .image-section img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .image-section textarea {
+            width: 100%;
+            min-height: 60px;
+            resize: vertical;
+            font-size: 1em;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Project 2: Convolutions - Image Results</h1>
+
+</body>
+</html>
+<div class="image-section" style="margin-bottom: 32px;">
+    <h2>Filters and Frequencies</h2>
+    <p>
+        In this project, we explore the concepts of convolutions and image blending. Convolutions are a fundamental operation in image processing, allowing us to apply various filters to images, such as blurring, sharpening, and edge detection. By blending images and applying different filters, we can extract meaningful features and enhance image quality for further analysis.
+    </p>
+</div>
+
+<div class="image-section" style="margin-bottom: 32px;">
+    <h3>Section 1.1: Convolutions</h3>
+    <p>
+        <strong>What is a convolution?</strong><br>
+        A convolution is an operation that applies a filter (or kernel) to an image by sliding the filter across the image and computing a weighted sum of the neighboring pixels. This process allows us to detect patterns, blur, or sharpen images depending on the kernel used.
+    </p>
+    <div style="display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px;">
+        <div style="flex: 1; text-align: center;">
+            <label for="original_image">Original Image</label><br>
+            <img id="original_image" src="images/picofmyself" alt="Original Image" style="max-width: 180px;">
+        </div>
+    </div>
+    <div style="display: flex; gap: 16px; align-items: flex-start;">
+        <div style="flex: 1;">
+            <label for="box_filter_4loops">Box Filter (4 loops):</label>
+            <img id="box_filter_4loops" src="results/box_filter_4loops.png" alt="Box Filter 4 Loops">
+        </div>
+        <div style="flex: 1;">
+            <label for="box_filter_2loops">Box Filter (2 loops):</label>
+            <img id="box_filter_2loops" src="results/box_filter_2loops.png" alt="Box Filter 2 Loops">
+        </div>
+        <div style="flex: 1;">
+            <label for="box_filter_scipy">Box Filter (scipy):</label>
+            <img id="box_filter_scipy" src="results/box_filter_scipy.png" alt="Box Filter Scipy">
+        </div>
+    </div>
+    <p style="margin-top: 16px;">
+        <strong>Switching kernel from box filter to difference operators for edge detection [-1, 0, 1]</strong>
+    </p>
+    <div style="display: flex; gap: 16px; align-items: flex-start;">
+        <div style="flex: 1;">
+            <label for="gradient_x">Gradient X:</label>
+            <img id="gradient_x" src="results/gradient_x.png" alt="Gradient X">
+        </div>
+        <div style="flex: 1;">
+            <label for="gradient_y">Gradient Y:</label>
+            <img id="gradient_y" src="results/gradient_y.png" alt="Gradient Y">
+        </div>
+    </div>
+    <p style="margin-top: 16px;">
+        Below is the code for generating these:
+    </p>
+    <div style="background: #f8f8f8; border: 1px dashed #ccc; padding: 16px; min-height: 60px;">
+        <textarea readonly style="width:100%;min-height:320px;font-family:monospace;font-size:14px;white-space:pre;resize:vertical;box-sizing:border-box;">
+def convolve4loops(image, kernel_type):
+    #read img as float array
+   
+    kern_height = kernel_type.shape[0]
+    kern_width = kernel_type.shape[1]
+
+    kernel_flipped = np.rot90(kernel_type, k = 2) #flip kernel 180 degrees at beginning so no confusion
+    out = np.zeros_like(image) #init blank output image
+    #zero pad input image:
+    img = pad_img(image, kern_height, kern_width)
+    #loop over input image location i, j
+    for i in range(image.shape[0]):
+        for j in range(image.shape[1]):
+            sum_at_loc = 0.0
+            for kern_loc_1 in range(kernel_type.shape[0]):
+                for kern_loc_2 in range(kernel_type.shape[1]):
+                    sum_at_loc += kernel_flipped[kern_loc_1, kern_loc_2] * img[i + kern_loc_1, j + kern_loc_2]
+            out[i, j] = sum_at_loc
+    return out
+
+def convolve2loops(image, kernel_type):
+    #instead of using another pair of 2 for loops, we grab the wjole patch covered by kernel, multiply it by flipped kernel and sum to output in one operation
+    img = image.astype(np.float64, copy = False)
+    kernel_type = np.asarray(kernel_type, dtype = np.float64)
+    kern_height = kernel_type.shape[0]
+    kern_width = kernel_type.shape[1]
+
+
+    # kernel_flipped = np.rot90(kernel_type, k = 2) #flip kernel 180 degrees at beginning so no confusion
+    kernel_flipped = kernel_type[::-1, ::-1]
+    out = np.empty((img.shape[0], img.shape[1]), dtype = float) #init blank output image
+    #zero pad input image:
+    padded = pad_img(img, kern_height, kern_width)
+    if padded.shape == (img.shape[0] + 2*(kern_height//2), img.shape[1] + 2 * (kern_width // 2)):
+        print("Padding happened")
+    for i in range(img.shape[0]): #have to use unpadded image to not get out of bounds for adding sum to output image
+        for j in range(img.shape[1]):
+            patch = padded[i:i+kern_height, j:j+ kern_width]
+            out[i, j] = np.sum(patch * kernel_flipped)
+    return out
+</textarea>
+    </div>
+</div>
+
+<div class="image-section" style="margin-bottom: 32px;">
+    <h3>Section 1.2: Edge Detection and Thresholding</h3>
+    <p>
+        Using an image of a cameraman, we apply partial derivatives in the x and y directions to construct a gradient magnitude image. From this, we can create a binarized edge image by thresholding. There is a tradeoff between removing noise and detecting all edges: higher thresholds remove noise but may miss faint edges, while lower thresholds detect more edges but may include noise.
+    </p>
+    <div style="display: flex; gap: 16px; align-items: flex-start;">
+        <div style="flex: 1;">
+            <label for="camera_guy_x">Cameraman ∂/∂x:</label>
+            <img id="camera_guy_x" src="results/camera_guy_x.png" alt="Cameraman Gradient X">
+        </div>
+        <div style="flex: 1;">
+            <label for="camera_guy_y">Cameraman ∂/∂y:</label>
+            <img id="camera_guy_y" src="results/camera_guy_y.png" alt="Cameraman Gradient Y">
+        </div>
+        <div style="flex: 1;">
+            <label for="grad_magnitude">Gradient Magnitude:</label>
+            <img id="grad_magnitude" src="results/grad_magnitude.png" alt="Gradient Magnitude">
+        </div>
+    </div>
+    <div style="margin-top: 16px;">
+        <label for="threshold_comparision">Threshold Comparison:</label>
+        <img id="threshold_comparision" src="results/threshold_comparision.png" alt="Threshold Comparison" style="max-width: 60%;">
+    </div>
+</div>
+
+<div class="image-section" style="margin-bottom: 32px;">
+    <h3>Section 1.3: Gaussian Smoothing and Edge Detection</h3>
+    <p>
+        We construct a Gaussian kernel using <code>cv2.getGaussianKernel</code>. First, we convolve our image with this Gaussian kernel and then find the edges of this image using the process above. This is shown below:
+    </p>
+    <div>
+        <label for="smoothed_edges">Smoothed Edges (Gaussian then edge detection):</label>
+        <img id="smoothed_edges" src="results/smoothed_edges.png" alt="Smoothed Edges">
+    </div>
+    <p style="margin-top: 16px;">
+        Then, we convolve the Gaussian kernel itself with difference operators, and repeat the process above to find smoothed edges in the image.
+    </p>
+    <div>
+        <label for="smoothed_edges_onepass">Smoothed Edges (One-pass):</label>
+        <img id="smoothed_edges_onepass" src="results/smoothed_edges_onepass.png" alt="Smoothed Edges One Pass">
+    </div>
+</div>
+<div class="image-section" style="margin-bottom: 32px;">
+    <h2>Section 2: Applications</h2>
+</div>
+
+<div class="image-section" style="margin-bottom: 32px;">
+    <h3>Section 2.1: Sharpening</h3>
+    <p>
+        The unsharp mask filter is a technique used to enhance the sharpness of an image. It works by first applying a blur filter (such as a Gaussian blur) to the original image to remove high-frequency details. The blurred image is then subtracted from the original, isolating the high-frequency components (edges and fine details). By adding a scaled version of these high frequencies back to the original image, we amplify the edges and make the image appear sharper. This process highlights details that may have been softened by previous smoothing or blurring operations.
+    </p>
+    <div>
+        <label for="taj_sharpening">Sharpened Image (Unsharp Mask):</label>
+        <img id="taj_sharpening" src="results/taj_sharpening.png" alt="Taj Sharpening">
+    </div>
+</div>
+
+<div class="image-section" style="margin-bottom: 32px;">
+    <h3>Section 2.2: Hybrid Images</h3>
+    <p>
+        To create a hybrid image, we combine the low-frequency (blurred) content of one image with the high-frequency (sharpened) content of another. When these are overlaid, the resulting image appears differently depending on the viewing distance: up close, the high-frequency image dominates, while from afar, the low-frequency image is more visible. This effect demonstrates how our visual system processes spatial frequencies.
+    </p>
+    <div style="display: flex; gap: 16px; align-items: flex-end; margin-bottom: 8px;">
+        <div style="flex: 1; text-align: center;">
+            <label for="derek_picture">DerekPicture</label><br>
+            <img id="derek_picture" src="proj2-convolutions/DerekPicture.jpg" alt="Derek Picture" style="max-width: 100px;">
+        </div>
+        <div style="flex: 1; text-align: center;">
+            <label for="nutmeg">Nutmeg</label><br>
+            <img id="nutmeg" src="proj2-convolutions/nutmeg.jpg" alt="Nutmeg" style="max-width: 100px;">
+        </div>
+        <div style="flex: 2; text-align: center;">
+            <label for="hybrid_derek_nutmeg">Hybrid: Derek &amp; Nutmeg</label><br>
+            <img id="hybrid_derek_nutmeg" src="results/hybrid_derek_nutmeg.png" alt="Hybrid Derek Nutmeg" style="max-width: 200px;">
+        </div>
+    </div>
+    <div style="display: flex; gap: 16px; align-items: flex-end; margin-bottom: 8px;">
+        <div style="flex: 1; text-align: center;">
+            <label for="lebron">lebron.jpg</label><br>
+            <img id="lebron" src="proj2-convolutions/lebron.jpg" alt="LeBron" style="max-width: 100px;">
+        </div>
+        <div style="flex: 1; text-align: center;">
+            <label for="steph">steph.jpg</label><br>
+            <img id="steph" src="proj2-convolutions/steph.jpg" alt="Steph" style="max-width: 100px;">
+        </div>
+        <div style="flex: 2; text-align: center;">
+            <label for="hybrid_bron_steph">Hybrid: LeBron &amp; Steph</label><br>
+            <img id="hybrid_bron_steph" src="results/hybrid_bron_steph.png" alt="Hybrid Bron Steph" style="max-width: 200px;">
+        </div>
+    </div>
+    <div style="margin-bottom: 8px;">
+        <label for="fft_analaysis">FFT Analysis of Hybrid Image:</label><br>
+        <img id="fft_analaysis" src="results/fft_analaysis.png" alt="FFT Analysis" style="max-width: 300px;">
+    </div>
+    <div style="display: flex; gap: 16px; align-items: flex-end;">
+        <div style="flex: 1; text-align: center;">
+            <label for="leapord">leapord</label><br>
+            <img id="leapord" src="proj2-convolutions/leapord.jpg" alt="Leapord" style="max-width: 100px;">
+        </div>
+        <div style="flex: 1; text-align: center;">
+            <label for="lion">lion</label><br>
+            <img id="lion" src="proj2-convolutions/lion.jpg" alt="Lion" style="max-width: 100px;">
+        </div>
+        <div style="flex: 2; text-align: center;">
+            <label for="hybrid_lion_leapord">Hybrid: Lion &amp; Leapord</label><br>
+            <img id="hybrid_lion_leapord" src="results/hybrid_lion_leapord.png" alt="Hybrid Lion Leapord" style="max-width: 200px;">
+        </div>
+    </div>
+</div>
+
+<div class="image-section" style="margin-bottom: 32px;">
+    <h3>Section 2.3 &amp; 2.4: Multiscale Image Blending</h3>
+    <p>
+        Here we construct both Gaussian and Laplacian stacks for the images of an apple and an orange. We then blend them using a mask image at each level of the Laplacian stack and then add it to the coarsest level of the Gaussian stack of each image. Our mask then takes from either side of the input images and softens the seam in the middle to seamlessly blend them together.
+    </p>
+    <div style="display: flex; gap: 16px; align-items: flex-end; margin-bottom: 8px;">
+        <div style="flex: 1; text-align: center;">
+            <label for="apple_gaussian_stack">Apple Gaussian Stack</label><br>
+            <img id="apple_gaussian_stack" src="results/apple_gaussian_stack.png" alt="Apple Gaussian Stack" style="max-width: 120px;">
+        </div>
+        <div style="flex: 1; text-align: center;">
+            <label for="apple_laplac_stack">Apple Laplacian Stack</label><br>
+            <img id="apple_laplac_stack" src="results/apple_laplac_stack.png" alt="Apple Laplacian Stack" style="max-width: 120px;">
+        </div>
+        <div style="flex: 1; text-align: center;">
+            <label for="orange_gaussian_stack">Orange Gaussian Stack</label><br>
+            <img id="orange_gaussian_stack" src="results/orange_gaussian_stack.png" alt="Orange Gaussian Stack" style="max-width: 120px;">
+        </div>
+        <div style="flex: 1; text-align: center;">
+            <label for="orange_laplac_stack">Orange Laplacian Stack</label><br>
+            <img id="orange_laplac_stack" src="results/orange_laplac_stack.png" alt="Orange Laplacian Stack" style="max-width: 120px;">
+        </div>
+    </div>
+    <div style="margin-bottom: 16px;">
+        <label for="oraple_blend">Blended Image (Oraple):</label><br>
+        <img id="oraple_blend" src="results/oraple_blend.png" alt="Oraple Blend" style="max-width: 300px;">
+    </div>
+    <p>
+        <b>Custom Blends:</b>
+    </p>
+    <div style="display: flex; gap: 16px; align-items: flex-end; margin-bottom: 8px;">
+        <div style="flex: 1; text-align: center;">
+            <label for="tomato">tomato.jpg</label><br>
+            <img id="tomato" src="proj2-convolutions/tomato.jpg" alt="Tomato" style="max-width: 100px;">
+        </div>
+        <div style="flex: 1; text-align: center;">
+            <label for="kiwi">kiwi.jpg</label><br>
+            <img id="kiwi" src="proj2-convolutions/kiwi.jpg" alt="Kiwi" style="max-width: 100px;">
+        </div>
+        <div style="flex: 2; text-align: center;">
+            <label for="kiwi_tomato_blend">Kiwi-Tomato Blend</label><br>
+            <img id="kiwi_tomato_blend" src="results/kiwi_tomato_blend.png" alt="Kiwi Tomato Blend" style="max-width: 200px;">
+        </div>
+    </div>
+    <p>
+        <b>Irregular Mask (circular mask):</b>
+    </p>
+    <div style="display: flex; gap: 16px; align-items: flex-end;">
+        <div style="flex: 1; text-align: center;">
+            <label for="moon">moon.jpg</label><br>
+            <img id="moon" src="proj2-convolutions/moon.jpg" alt="Moon" style="max-width: 100px;">
+        </div>
+        <div style="flex: 1; text-align: center;">
+            <label for="eye">eye.jpg</label><br>
+            <img id="eye" src="proj2-convolutions/eye.jpg" alt="Eye" style="max-width: 100px;">
+        </div>
+        <div style="flex: 2; text-align: center;">
+            <label for="circular_mask_blend">Circular Mask Blend</label><br>
+            <img id="circular_mask_blend" src="results/circular_mask_blend.png" alt="Circular Mask Blend" style="max-width: 200px;">
+        </div>
+    </div>
+</div>
+<style>
+    body {
+        background: linear-gradient(135deg, #f9f9f9 0%, #e0e7ff 100%);
+    }
+    .image-section {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(80, 80, 180, 0.10);
+        border: 2px solid #e0e7ff;
+    }
+    h1, h2, h3 {
+        color: #3b3b7a;
+    }
+    label {
+        color: #2d6a4f;
+    }
+    .image-section img {
+        border: 2px solid #b6ccfe;
+        background: #f0f4ff;
+    }
+    .image-section textarea {
+        border: 1.5px solid #b6ccfe;
+        background: #f8fbff;
+    }
+    .image-section p, .image-section b {
+        color: #444;
+    }
+</style>
