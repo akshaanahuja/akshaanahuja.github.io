@@ -65,8 +65,8 @@
         <strong>What is a convolution?</strong><br>
         A convolution is an operation that applies a filter (or kernel) to an image by sliding the filter across the image and computing a weighted sum of the neighboring pixels. This process allows us to detect patterns, blur, or sharpen images depending on the kernel used.
     </p>
-    <div style="display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px;">
-        <div style="flex: 1; text-align: center;">
+    <div style="display: flex; justify-content: center; margin-bottom: 16px;">
+        <div style="text-align: center;">
             <label for="original_image">Original Image</label><br>
             <img id="original_image" src="images/picofmyself.png" alt="Original Image" style="max-width: 180px;">
         </div>
@@ -209,51 +209,51 @@ def convolve2loops(image, kernel_type):
     <p>
         To create a hybrid image, we combine the low-frequency (blurred) content of one image with the high-frequency (sharpened) content of another. When these are overlaid, the resulting image appears differently depending on the viewing distance: up close, the high-frequency image dominates, while from afar, the low-frequency image is more visible. This effect demonstrates how our visual system processes spatial frequencies.
     </p>
-    <div style="display: flex; gap: 16px; align-items: flex-end; margin-bottom: 8px;">
-        <div style="flex: 1; text-align: center;">
+    <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 16px;">
+        <div style="text-align: center;">
             <label for="derek_picture">DerekPicture</label><br>
             <img id="derek_picture" src="DerekPicture.jpg" alt="Derek Picture" style="max-width: 100px;">
         </div>
-        <div style="flex: 1; text-align: center;">
+        <div style="text-align: center;">
             <label for="nutmeg">Nutmeg</label><br>
             <img id="nutmeg" src="nutmeg.jpg" alt="Nutmeg" style="max-width: 100px;">
         </div>
-        <div style="flex: 2; text-align: center;">
-            <label for="hybrid_derek_nutmeg">Hybrid: Derek &amp; Nutmeg</label><br>
-            <img id="hybrid_derek_nutmeg" src="results/hybrid_derek_nutmeg.jpg" alt="Hybrid Derek Nutmeg" style="max-width: 200px;">
+    </div>
+    <div style="text-align: center; margin-bottom: 16px;">
+        <label for="hybrid_derek_nutmeg">Hybrid: Derek &amp; Nutmeg</label><br>
+        <img id="hybrid_derek_nutmeg" src="results/hybrid_derek_nutmeg.jpg" alt="Hybrid Derek Nutmeg" style="max-width: 200px;">
+    </div>
+    <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 16px;">
+        <div style="text-align: center;">
+            <label for="lebron">lebron.jpg</label><br>
+            <img id="lebron" src="lebron.png" alt="LeBron" style="max-width: 100px;">
+        </div>
+        <div style="text-align: center;">
+            <label for="steph">steph.jpg</label><br>
+            <img id="steph" src="steph.png" alt="Steph" style="max-width: 100px;">
         </div>
     </div>
-    <div style="display: flex; gap: 16px; align-items: flex-end; margin-bottom: 8px;">
-        <div style="flex: 1; text-align: center;">
-            <label for="lebron">lebron.jpg</label><br>
-            <img id="lebron" src="lebron.jpg" alt="LeBron" style="max-width: 100px;">
-        </div>
-        <div style="flex: 1; text-align: center;">
-            <label for="steph">steph.jpg</label><br>
-            <img id="steph" src="steph.jpg" alt="Steph" style="max-width: 100px;">
-        </div>
-        <div style="flex: 2; text-align: center;">
-            <label for="hybrid_bron_steph">Hybrid: LeBron &amp; Steph</label><br>
-            <img id="hybrid_bron_steph" src="results/hybrid_bron_steph.jpg" alt="Hybrid Bron Steph" style="max-width: 200px;">
-        </div>
+    <div style="text-align: center; margin-bottom: 16px;">
+        <label for="hybrid_bron_steph">Hybrid: LeBron &amp; Steph</label><br>
+        <img id="hybrid_bron_steph" src="results/hybrid_bron_stephen.jpg" alt="Hybrid Bron Steph" style="max-width: 200px;">
     </div>
     <div style="margin-bottom: 8px;">
         <label for="fft_analaysis">FFT Analysis of Hybrid Image:</label><br>
         <img id="fft_analaysis" src="results/fft_analysis.jpg" alt="FFT Analysis" style="max-width: 300px;">
     </div>
-    <div style="display: flex; gap: 16px; align-items: flex-end;">
-        <div style="flex: 1; text-align: center;">
+    <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 16px;">
+        <div style="text-align: center;">
             <label for="leapord">leapord</label><br>
             <img id="leapord" src="leapord.jpg" alt="Leapord" style="max-width: 100px;">
         </div>
-        <div style="flex: 1; text-align: center;">
+        <div style="text-align: center;">
             <label for="lion">lion</label><br>
             <img id="lion" src="lion.jpg" alt="Lion" style="max-width: 100px;">
         </div>
-        <div style="flex: 2; text-align: center;">
-            <label for="hybrid_lion_leapord">Hybrid: Lion &amp; Leapord</label><br>
-            <img id="hybrid_lion_leapord" src="results/hybrid_lion_leapord.jpg" alt="Hybrid Lion Leapord" style="max-width: 200px;">
-        </div>
+    </div>
+    <div style="text-align: center; margin-bottom: 16px;">
+        <label for="hybrid_lion_leapord">Hybrid: Lion &amp; Leopard</label><br>
+        <img id="hybrid_lion_leapord" src="results/hybrid_lion_leopard.jpg" alt="Hybrid Lion Leopard" style="max-width: 200px;">
     </div>
 </div>
 
@@ -262,61 +262,59 @@ def convolve2loops(image, kernel_type):
     <p>
         Here we construct both Gaussian and Laplacian stacks for the images of an apple and an orange. We then blend them using a mask image at each level of the Laplacian stack and then add it to the coarsest level of the Gaussian stack of each image. Our mask then takes from either side of the input images and softens the seam in the middle to seamlessly blend them together.
     </p>
-    <div style="display: flex; gap: 16px; align-items: flex-end; margin-bottom: 8px;">
-        <div style="flex: 1; text-align: center;">
-            <label for="apple_gaussian_stack">Apple Gaussian Stack</label><br>
-            <img id="apple_gaussian_stack" src="results/apple_gaussian_stack.jpg" alt="Apple Gaussian Stack" style="max-width: 120px;">
-        </div>
-        <div style="flex: 1; text-align: center;">
-            <label for="apple_laplac_stack">Apple Laplacian Stack</label><br>
-            <img id="apple_laplac_stack" src="results/apple_laplacian_stack.jpg" alt="Apple Laplacian Stack" style="max-width: 120px;">
-        </div>
-        <div style="flex: 1; text-align: center;">
-            <label for="orange_gaussian_stack">Orange Gaussian Stack</label><br>
-            <img id="orange_gaussian_stack" src="results/orange_gaussian_stack.jpg" alt="Orange Gaussian Stack" style="max-width: 120px;">
-        </div>
-        <div style="flex: 1; text-align: center;">
-            <label for="orange_laplac_stack">Orange Laplacian Stack</label><br>
-            <img id="orange_laplac_stack" src="results/orange_laplacian_stack.jpg" alt="Orange Laplacian Stack" style="max-width: 120px;">
-        </div>
+    <div style="text-align: center; margin-bottom: 16px;">
+        <label for="apple_gaussian_stack">Apple Gaussian Stack</label><br>
+        <img id="apple_gaussian_stack" src="results/apple_gaussian_stack.jpg" alt="Apple Gaussian Stack" style="max-width: 400px;">
     </div>
-    <div style="margin-bottom: 16px;">
+    <div style="text-align: center; margin-bottom: 16px;">
+        <label for="apple_laplac_stack">Apple Laplacian Stack</label><br>
+        <img id="apple_laplac_stack" src="results/apple_laplacian_stack.jpg" alt="Apple Laplacian Stack" style="max-width: 400px;">
+    </div>
+    <div style="text-align: center; margin-bottom: 16px;">
+        <label for="orange_gaussian_stack">Orange Gaussian Stack</label><br>
+        <img id="orange_gaussian_stack" src="results/orange_gaussian_stack.jpg" alt="Orange Gaussian Stack" style="max-width: 400px;">
+    </div>
+    <div style="text-align: center; margin-bottom: 16px;">
+        <label for="orange_laplac_stack">Orange Laplacian Stack</label><br>
+        <img id="orange_laplac_stack" src="results/orange_laplacian_stack.jpg" alt="Orange Laplacian Stack" style="max-width: 400px;">
+    </div>
+    <div style="margin-bottom: 16px; text-align: center;">
         <label for="oraple_blend">Blended Image (Oraple):</label><br>
         <img id="oraple_blend" src="results/oraple_blend.jpg" alt="Oraple Blend" style="max-width: 300px;">
     </div>
     <p>
         <b>Custom Blends:</b>
     </p>
-    <div style="display: flex; gap: 16px; align-items: flex-end; margin-bottom: 8px;">
-        <div style="flex: 1; text-align: center;">
+    <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 16px;">
+        <div style="text-align: center;">
             <label for="tomato">tomato.jpg</label><br>
             <img id="tomato" src="tomato.jpg" alt="Tomato" style="max-width: 100px;">
         </div>
-        <div style="flex: 1; text-align: center;">
+        <div style="text-align: center;">
             <label for="kiwi">kiwi.jpg</label><br>
             <img id="kiwi" src="kiwi.jpg" alt="Kiwi" style="max-width: 100px;">
         </div>
-        <div style="flex: 2; text-align: center;">
-            <label for="kiwi_tomato_blend">Kiwi-Tomato Blend</label><br>
-            <img id="kiwi_tomato_blend" src="results/kiwi_tomato_blend.jpg" alt="Kiwi Tomato Blend" style="max-width: 200px;">
-        </div>
+    </div>
+    <div style="text-align: center; margin-bottom: 16px;">
+        <label for="kiwi_tomato_blend">Kiwi-Tomato Blend</label><br>
+        <img id="kiwi_tomato_blend" src="results/kiwi_tomato_blend.jpg" alt="Kiwi Tomato Blend" style="max-width: 200px;">
     </div>
     <p>
         <b>Irregular Mask (circular mask):</b>
     </p>
-    <div style="display: flex; gap: 16px; align-items: flex-end;">
-        <div style="flex: 1; text-align: center;">
+    <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 16px;">
+        <div style="text-align: center;">
             <label for="moon">moon.jpg</label><br>
             <img id="moon" src="moon.jpg" alt="Moon" style="max-width: 100px;">
         </div>
-        <div style="flex: 1; text-align: center;">
+        <div style="text-align: center;">
             <label for="eye">eye.jpg</label><br>
             <img id="eye" src="eye.jpg" alt="Eye" style="max-width: 100px;">
         </div>
-        <div style="flex: 2; text-align: center;">
-            <label for="circular_mask_blend">Circular Mask Blend</label><br>
-            <img id="circular_mask_blend" src="results/circle_mask_blend.jpg" alt="Circular Mask Blend" style="max-width: 200px;">
-        </div>
+    </div>
+    <div style="text-align: center;">
+        <label for="circular_mask_blend">Circular Mask Blend</label><br>
+        <img id="circular_mask_blend" src="results/circle_mask_blend.jpg" alt="Circular Mask Blend" style="max-width: 200px;">
     </div>
 </div>
 <style>
@@ -347,3 +345,4 @@ def convolve2loops(image, kernel_type):
         color: #444;
     }
 </style>
+
