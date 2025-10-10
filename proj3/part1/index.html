@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Project 3 Part 1: Set1 and Set2 Images</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #f9f9f9 0%, #e0e7ff 100%);
+      font-family: Arial, sans-serif;
+      color: #222;
+      margin: 0;
+      padding: 0;
+    }
+    h2 {
+      color: #3b3b7a;
+      text-align: center;
+      margin-top: 32px;
+    }
+    .image-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 24px;
+      margin: 32px 0 48px 0;
+      flex-wrap: wrap;
+    }
+    .img-container {
+      text-align: center;
+    }
+    .img-container img {
+      max-width: 180px;
+      max-height: 180px;
+      border: 2px solid #b6ccfe;
+      border-radius: 8px;
+      background: #f0f4ff;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 8px rgba(80, 80, 180, 0.10);
+    }
+    .img-label {
+      color: #2d6a4f;
+      font-size: 1rem;
+      margin-top: 4px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h2>Set 1 Images</h2>
+  <div class="image-row">
+    <div class="img-container">
+      <img src="images/Set1_images/Set1_img1.jpg" alt="Set1_img1">
+      <span class="img-label">Set1_img1</span>
+    </div>
+    <div class="img-container">
+      <img src="images/Set1_images/Set1_img2.jpg" alt="Set1_img2">
+      <span class="img-label">Set1_img2</span>
+    </div>
+    <div class="img-container">
+      <img src="images/Set1_images/Set1_img3.jpg" alt="Set1_img3">
+      <span class="img-label">Set1_img3</span>
+    </div>
+    <div class="img-container">
+      <img src="images/Set1_images/Set1_img4.jpg" alt="Set1_img4">
+      <span class="img-label">Set1_img4</span>
+    </div>
+    <div class="img-container">
+      <img src="images/Set1_images/Set1_img5.jpg" alt="Set1_img5">
+      <span class="img-label">Set1_img5</span>
+    </div>
+  </div>
+
+  <h2>Set 2 Images</h2>
+  <div class="image-row">
+    <div class="img-container">
+      <img src="images/Set2_images/Set2_img1.jpg" alt="Set2_img1">
+      <span class="img-label">Set2_img1</span>
+    </div>
+    <div class="img-container">
+      <img src="images/Set2_images/Set2_img2.jpg" alt="Set2_img2">
+      <span class="img-label">Set2_img2</span>
+    </div>
+    <div class="img-container">
+      <img src="images/Set2_images/Set2_img3.jpg" alt="Set2_img3">
+      <span class="img-label">Set2_img3</span>
+    </div>
+    <div class="img-container">
+      <img src="images/Set2_images/Set2_img4.jpg" alt="Set2_img4">
+      <span class="img-label">Set2_img4</span>
+    </div>
+    <div class="img-container">
+      <img src="images/Set2_images/Set2_img5.jpg" alt="Set2_img5">
+      <span class="img-label">Set2_img5</span>
+    </div>
+  </div>
+  <h2>Correspondences and Homography</h2>
+  <div style="text-align: center; margin-bottom: 20px;">
+    <img src="images/correspondences.png" alt="Correspondences between Set1_img1 and Set1_img2" style="max-width: 80%; border: 2px solid #333;"/>
+    <div style="font-size: 0.95em; color: #555; margin-top: 8px;">
+      <em>Figure: Selected correspondences between Set1_img1 and Set1_img2</em>
+    </div>
+  </div>
+
+  <style>
+    .matrix-block {
+      display: inline-block;
+      background: #fff;
+      border: 1.5px solid #bbb;
+      border-radius: 7px;
+      padding: 18px 22px 18px 22px;
+      margin: 18px 0 24px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .matrix-label {
+      display: block;
+      font-weight: 600;
+      font-size: 1.08em;
+      margin-bottom: 8px;
+      text-align: center;
+      color: #222;
+      letter-spacing: 0.01em;
+    }
+    .matrix-table {
+      border-collapse: separate;
+      border-spacing: 0 0.2em;
+      font-family: 'Consolas', 'Menlo', 'monospace';
+      font-size: 1.13em;
+      margin: 0 auto;
+      background: #f9f9f9;
+    }
+    .matrix-table td {
+      padding: 2px 16px;
+      text-align: right;
+      min-width: 90px;
+      border: none;
+      color: #222;
+    }
+    .matrix-bracket {
+      font-size: 2.1em;
+      vertical-align: middle;
+      color: #888;
+      font-family: serif;
+      padding: 0 8px;
+      user-select: none;
+    }
+    .vector-table {
+      border-collapse: separate;
+      border-spacing: 0 0.2em;
+      font-family: 'Consolas', 'Menlo', 'monospace';
+      font-size: 1.13em;
+      margin: 0 auto;
+      background: #f9f9f9;
+    }
+    .vector-table td {
+      padding: 2px 14px;
+      text-align: right;
+      min-width: 70px;
+      border: none;
+      color: #222;
+    }
+    @media (max-width: 700px) {
+      .matrix-table td, .vector-table td { min-width: 60px; font-size: 0.98em; }
+      .matrix-block { padding: 10px 4px; }
+    }
+  </style>
+
+  <!-- "Recovered Homography Matrix" SECTION -->
+  <div style="display: flex; justify-content: center; align-items: center; min-height: 100px; margin-bottom: 30px;">
+    <div style="background: #f8f8f8; border: 1px solid #ccc; padding: 18px; border-radius: 8px; max-width: 900px; width: 100%; text-align: center;">
+      <h3 style="margin-top: 0;">Recovered Homography Matrix</h3>
+      <div class="matrix-block" style="margin-left: auto; margin-right: auto;">
+        <span class="matrix-label">Homography matrix <b>H</b>:</span>
+        <table style="margin: 0 auto;">
+          <tr>
+            <td class="matrix-bracket" rowspan="3">&#91;</td>
+            <td>
+              <table class="matrix-table">
+                <tr>
+                  <td>1.3695</td>
+                  <td>0.070929</td>
+                  <td>-1.3899e+03</td>
+                </tr>
+                <tr>
+                  <td>0.20196</td>
+                  <td>1.2547</td>
+                  <td>-386.13</td>
+                </tr>
+                <tr>
+                  <td>1.1483e-04</td>
+                  <td>1.1705e-05</td>
+                  <td>1</td>
+                </tr>
+              </table>
+            </td>
+            <td class="matrix-bracket" rowspan="3">&#93;</td>
+          </tr>
+        </table>
+        <div style="text-align: center; font-size: 0.97em; color: #666; margin-top: 4px;">
+          <em>Shape: (3, 3)</em>
+        </div>
+      </div>
+
+      <div style="margin-top: 30px; background: #f9f9f9; border-radius: 7px; padding: 18px 22px; display: inline-block; text-align: left;">
+        <h4 style="margin-top: 0; margin-bottom: 10px; font-size: 1.08em; color: #222; text-align: center;">How the Homography Was Computed</h4>
+        <div style="font-size: 1.04em; color: #333; line-height: 1.6;">
+          To recover the homography matrix <b>H</b> that maps points from one image to another, we first select at least four pairs (the more, the better recovered homography) of corresponding points between the two images. For each correspondence, we set up two linear equations that relate the coordinates in the first image to those in the second image using the unknown entries of <b>H</b>. Stacking all these equations together, we form a linear system of the form <b>Ah = b</b>, where <b>h</b> is a vector containing the entries of the homography matrix (we will reshape this into a 3x3 matrix, where the 9th entry is fixed to 1). Since we typically have more than four correspondences, the system is overdetermined, and we solve for <b>h</b> using least squares. 
+        </div>
+      </div>
+
+      <div style="margin-top: 34px; background: #f9f9f9; border-radius: 7px; padding: 20px 24px; display: inline-block; text-align: left; max-width: 850px;">
+        <h4 style="margin-top: 0; margin-bottom: 12px; font-size: 1.08em; color: #222; text-align: center;">Image Rectification and Warping Overview</h4>
+        <div style="font-size: 1.045em; color: #333; line-height: 1.64;">
+          <b>Image rectification</b> uses the computed homography matrix to "unwarp" an oblique or distorted image and produce a frontward view of the target rectangle. In our code, after clicking four corresponding points in the input, we compute the homography and then perform image warping using two interpolation methods, nearest neighbor and bilinear.
+        
+        </div>
+        <div style="margin: 18px 0 13px 0; text-align: center;">
+          <img src="images/rectified1.png" alt="Rectified Output Example" style="max-width: 520px; box-shadow: 0 2px 13px rgba(0,0,0,0.08); border-radius: 5px;">
+          <div style="margin-top: 6px; color: #777; font-size: 0.99em;">Example output of rectification using the computed homography</div>
+        </div>
+        <div style="margin: 13px 0 10px 0; text-align: center;">
+          <img src="images/rectified2.png" alt="Second Rectified Output Example" style="max-width: 520px; box-shadow: 0 2px 13px rgba(0,0,0,0.08); border-radius: 5px;">
+          <div style="margin-top: 6px; color: #777; font-size: 0.99em;">Second example of rectification output</div>
+        </div>
+        </div>
+        <div style="font-size: 1.04em; color: #333; line-height: 1.59;">
+          For timing, the <b>nearest neighbor</b> warping completed in about <b>20 seconds</b>, while <b>bilinear interpolation</b> took approximately <b>35 seconds</b> due to more computations needed.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- "Creating Image Mosaics" SECTION -->
+  <div style="display: flex; justify-content: center; align-items: center; min-height: 100px;">
+    <div style="background: #f8f8f8; border: 1px solid #ccc; padding: 18px; border-radius: 8px; max-width: 900px; width: 100%; text-align: center;">
+      <div style="margin-top: 40px; background: #f9f9f9; border-radius: 7px; padding: 22px 26px; display: inline-block; text-align: left; max-width: 925px;">
+        <h4 style="margin-top: 0; margin-bottom: 13px; font-size: 1.09em; color: #222; text-align: center;">Creating Image Mosaics</h4>
+        <div style="font-size: 1.04em; color: #333; line-height: 1.6; margin-bottom: 22px;">
+          Multiple overlapping images can be stitched together into mosaic using the computed homographies for each pair of adjacent images. By chaining these homographies and then blending the warped images together, we generate a panorama!
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 36px;">
+          <div style="text-align: center; margin-bottom: 10px;">
+            <img src="images/Set1_images/Pano1.png" alt="Mosaic Panorama 1" style="width: 71.25vw; max-width: 900px; border-radius: 5px; box-shadow: 0 2px 16px rgba(0,0,0,0.10); margin-bottom: 8px;">
+            <div style="color: #777; font-size: 1.07em; margin-top: 3px;">Mosaic from Set 1</div>
+          </div>
+          <div style="text-align: center; margin-bottom: 10px;">
+            <img src="images/Set2_images/Pano2.png" alt="Mosaic Panorama 2" style="width: 71.25vw; max-width: 900px; border-radius: 5px; box-shadow: 0 2px 16px rgba(0,0,0,0.10); margin-bottom: 8px;">
+            <div style="color: #777; font-size: 1.07em; margin-top: 3px;">Mosaic from Set 2</div>
+          </div>
+          <div style="text-align: center; margin-bottom: 0;">
+            <img src="images/Set3_images/Pano3.png" alt="Mosaic Panorama 3" style="width: 71.25vw; max-width: 900px; border-radius: 5px; box-shadow: 0 2px 16px rgba(0,0,0,0.10); margin-bottom: 8px;">
+            <div style="color: #777; font-size: 1.07em; margin-top: 3px;">Mosaic from Set 3</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
