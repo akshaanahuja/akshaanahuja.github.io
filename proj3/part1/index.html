@@ -43,6 +43,64 @@
       margin-top: 4px;
       display: block;
     }
+    /* Added for Part B section */
+    .part-b-section {
+      margin: 52px auto 0 auto;
+      max-width: 900px;
+      background: #f8faff;
+      border-radius: 8px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      border: 1.2px solid #c3dcff;
+      padding: 32px 18px 36px 18px;
+    }
+    .part-b-section h2 {
+      color: #2c4886;
+      margin-bottom: 24px;
+      text-align: center;
+      font-size: 1.45em;
+      letter-spacing: 0.7px;
+      font-weight: 700;
+    }
+    .part-b-images {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      margin-bottom: 24px;
+    }
+    .part-b-img-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 12px;
+      width: 95%;
+      max-width: 720px;
+    }
+    .part-b-img-box img {
+      max-width: 100%;
+      border-radius: 6px;
+      border: 2px solid #b6ccfe;
+      box-shadow: 0 2px 10px rgba(44,92,180,0.09);
+    }
+    .desc-box {
+      background: #e8eefb;
+      border: 1px solid #bbd2f7;
+      border-radius: 6px;
+      padding: 16px 18px;
+      font-size: 1.07em;
+      color: #183955;
+      margin: 12px 0 28px 0;
+      width: 95%;
+      max-width: 720px;
+      min-height: 42px;
+      box-sizing: border-box;
+    }
+    @media (max-width: 700px) {
+      .matrix-table td, .vector-table td { min-width: 60px; font-size: 0.98em; }
+      .matrix-block { padding: 10px 4px; }
+      .part-b-section { padding: 12px 0 16px 0; }
+      .desc-box { padding: 10px; font-size: 0.98em; }
+    }
   </style>
 </head>
 <body>
@@ -230,12 +288,13 @@
   </div>
 
   <!-- "Creating Image Mosaics" SECTION -->
-  <div style="display: flex; justify-content: center; align-items: center; min-height: 100px;">
-    <div style="background: #f8f8f8; border: 1px solid #ccc; padding: 18px; border-radius: 8px; max-width: 900px; width: 100%; text-align: center;">
+  <div style="display: flex; justify-content: center; align-items: center; min-height: 100px; width: 100%;">
+    <div style="background: #f8f8f8; border: 1px solid #ccc; padding: 18px; border-radius: 8px; max-width: 900px; width: 100%; text-align: center; margin-bottom: 46px;">
       <div style="margin-top: 40px; background: #f9f9f9; border-radius: 7px; padding: 22px 26px; display: inline-block; text-align: left; max-width: 925px;">
         <h4 style="margin-top: 0; margin-bottom: 13px; font-size: 1.09em; color: #222; text-align: center;">Creating Image Mosaics</h4>
         <div style="font-size: 1.04em; color: #333; line-height: 1.6; margin-bottom: 22px;">
           Multiple overlapping images can be stitched together into mosaic using the computed homographies for each pair of adjacent images. By chaining these homographies and then blending the warped images together, we generate a panorama!
+        </div>
         <div style="display: flex; flex-direction: column; align-items: center; gap: 36px;">
           <div style="text-align: center; margin-bottom: 10px;">
             <img src="images/Set1_images/Pano1.png" alt="Mosaic Panorama 1" style="width: 71.25vw; max-width: 900px; border-radius: 5px; box-shadow: 0 2px 16px rgba(0,0,0,0.10); margin-bottom: 8px;">
@@ -250,6 +309,111 @@
             <div style="color: #777; font-size: 1.07em; margin-top: 3px;">Mosaic from Set 3</div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Part B: Harris Corner Detection with and without ANMS (now forced to be below, not side-by-side) -->
+  <div class="part-b-section" style="margin: 70px auto 0 auto; max-width: 1080px; background: #f6faff; border-radius: 12px; border: 1.5px solid #dde5f8; padding: 46px 0 34px 0; box-shadow: 0 4px 18px rgba(60,85,155,0.06); clear: both;">
+    <h2 style="text-align:center; font-size: 2.1em; color: #273974; margin-bottom: 28px;">Part B</h2>
+    <h3 style="text-align:center; font-size: 1.6em; color: #273974; margin-bottom: 28px;">Harris Corner Detection with and without ANMS</h3>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 36px;">
+      <div style="text-align: center;">
+        <img src="images/harris_corners_no_anms.png" alt="Harris corners: ANMS vs No ANMS" style="max-width: 1020px; width: 130.5vw; border-radius: 7px; box-shadow: 0 2px 18px rgba(50,68,120,0.14); margin-bottom: 14px;">
+        <div style="color: #444; font-size: 1.13em; margin-top: 6px; max-width: 700px; margin-left: auto; margin-right: auto;">
+          Here we can see the difference between Harris Corners and varying the value of peak_local_max argument of min_distance. As we can see, the higher the argument "max distance", the fewer corners we find.
+        </div>
+      </div>
+      <div style="text-align: center;">
+        <img src="images/anms_vs_no_anms_2.png" alt="Harris corners without ANMS" style="max-width: 1020px; width: 130.5vw; border-radius: 7px; box-shadow: 0 2px 18px rgba(50,68,120,0.14); margin-bottom: 14px;">
+        <div style="color: #444; font-size: 1.13em; margin-top: 6px; max-width: 700px; margin-left: auto; margin-right: auto;">
+          Here we can see the difference between Harris corners without and with ANMS. The ANMS method helps to reduce the number of corners, and the suppression radius is used to remove corners that are too close to each other or not "corner-like" enough. We called Harris Corner Finder with a peak_local_max argument of min_distance set to 5, so we find lots of potential Harris corners.
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- INSERT_YOUR_CODE -->
+  <div class="feature-extraction-section" style="margin: 70px auto 0 auto; max-width: 820px; background: #fbfbff; border-radius: 12px; border: 1.5px solid #ebedfa; padding: 48px 0 36px 0; box-shadow: 0 4px 16px rgba(60,85,155,0.07); clear: both;">
+    <h3 style="text-align:center; font-size: 1.6em; color: #2e4373; margin-bottom: 29px;">Feature Extraction</h3>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 36px;">
+      <div style="text-align: center;">
+        <img src="images/2_points_features.png" alt="Feature extraction around two points" style="max-width: 720px; width: 95vw; border-radius: 7px; box-shadow: 0 2px 16px rgba(60,68,120,0.12); margin-bottom: 11px;">
+        <div style="color: #444; font-size: 1.11em; margin-top: 6px; max-width: 650px; margin-left: auto; margin-right: auto;">
+          Example of extracting feature vectors (patches) for two interest points found using Harris corners. Each patch captures the local structure near a corner.
+        </div>
+      </div>
+      <div style="text-align: center;">
+        <img src="images/15_feature_extractions.png" alt="Feature extraction 15 locations" style="max-width: 720px; width: 95vw; border-radius: 7px; box-shadow: 0 2px 16px rgba(60,68,120,0.12); margin-bottom: 11px;">
+        <div style="color: #444; font-size: 1.11em; margin-top: 6px; max-width: 650px; margin-left: auto; margin-right: auto;">
+          Multiple feature vectors are extracted from around 15 important corner points. These feature descriptors are later used for matching across images.
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- INSERT_YOUR_CODE -->
+  <div class="feature-matching-section" style="margin: 70px auto 0 auto; max-width: 820px; background: #fbfbff; border-radius: 12px; border: 1.5px solid #ebedfa; padding: 48px 0 36px 0; box-shadow: 0 4px 16px rgba(60,85,155,0.07); clear: both;">
+    <h3 style="text-align:center; font-size: 1.6em; color: #2e4373; margin-bottom: 29px;">Feature Matching</h3>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 36px;">
+      <div style="text-align: center;">
+        <img src="images/feature_matching.png" alt="Feature matching between images" style="max-width: 720px; width: 95vw; border-radius: 7px; box-shadow: 0 2px 16px rgba(60,68,120,0.12); margin-bottom: 11px;">
+        <div style="color: #444; font-size: 1.11em; margin-top: 6px; max-width: 650px; margin-left: auto; margin-right: auto;">
+          Feature matching finds corresponding corner-ish points between two images by comparing feature descriptors. The colored lines connect pairs of points that are identified as matches based on their feature similarity. These matches are used for estimating transformations between images.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSERT_YOUR_CODE -->
+  <div class="automatic-mosaic-section" style="margin: 75px auto 0 auto; max-width: 1080px; background: #f8fbfe; border-radius: 12px; border: 1.5px solid #dde5f8; padding: 50px 0 38px 0; box-shadow: 0 4px 19px rgba(60,85,155,0.07); clear: both;">
+    <h3 style="text-align:center; font-size: 1.6em; color: #25396c; margin-bottom: 33px;">Automatic Mosaic Creation</h3>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 54px;">
+      
+      <!-- Set 1 Comparison -->
+      <div style="width:100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 38px;">
+        <div style="text-align: center;">
+          <img src="images/Set1_images/Pano1.png" alt="Manual Mosaic Set 1" style="max-width: 480px; width: 44vw; border-radius: 8px; box-shadow: 0 2px 18px rgba(50,68,120,0.12); margin-bottom: 10px;">
+          <div style="color: #4a4a4a; font-size: 1.07em; margin-top: 5px;">Manual Mosaic (Set 1)</div>
+        </div>
+        <div style="text-align: center;">
+          <img src="images/Set1_images/Automatic_Pano1.png" alt="Automatic Mosaic Set 1" style="max-width: 480px; width: 44vw; border-radius: 8px; box-shadow: 0 2px 18px rgba(50,68,120,0.12); margin-bottom: 10px;">
+          <div style="color: #4a4a4a; font-size: 1.07em; margin-top: 5px;">Automatic Mosaic (Set 1)</div>
+        </div>
+      </div>
+      <!-- Set 1 description -->
+      <div style="color: #444; font-size: 1.15em; margin-top: 4px; max-width: 760px; margin-left: auto; margin-right: auto;">
+        <b>Set 1:</b> The left image is a panorama manually stitched using custom clicked correspondences, while the right is the result of our fully automatic pipeline using Harris corners, feature extraction, matching, RANSAC, and homography warping. 
+      </div>
+
+      <!-- Set 2 Comparison -->
+      <div style="width:100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 38px;">
+        <div style="text-align: center;">
+          <img src="images/Set2_images/Pano2.png" alt="Manual Mosaic Set 2" style="max-width: 480px; width: 44vw; border-radius: 8px; box-shadow: 0 2px 18px rgba(50,68,120,0.12); margin-bottom: 10px;">
+          <div style="color: #4a4a4a; font-size: 1.07em; margin-top: 5px;">Manual Mosaic (Set 2)</div>
+        </div>
+        <div style="text-align: center;">
+          <img src="images/Set2_images/Automatic_Pano2.png" alt="Automatic Mosaic Set 2" style="max-width: 480px; width: 44vw; border-radius: 8px; box-shadow: 0 2px 18px rgba(50,68,120,0.12); margin-bottom: 10px;">
+          <div style="color: #4a4a4a; font-size: 1.07em; margin-top: 5px;">Automatic Mosaic (Set 2)</div>
+        </div>
+      </div>
+      <!-- Set 2 description -->
+      <div style="color: #444; font-size: 1.15em; margin-top: 4px; max-width: 760px; margin-left: auto; margin-right: auto;">
+        <b>Set 2:</b> 
+      </div>
+
+      <!-- Set 3 Comparison -->
+      <div style="width:100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 38px;">
+        <div style="text-align: center;">
+          <img src="images/Set3_images/Pano3.png" alt="Manual Mosaic Set 3" style="max-width: 480px; width: 44vw; border-radius: 8px; box-shadow: 0 2px 18px rgba(50,68,120,0.12); margin-bottom: 10px;">
+          <div style="color: #4a4a4a; font-size: 1.07em; margin-top: 5px;">Manual Mosaic (Set 3)</div>
+        </div>
+        <div style="text-align: center;">
+          <img src="images/Set3_images/Automatic_Pano3.png" alt="Automatic Mosaic Set 3" style="max-width: 480px; width: 44vw; border-radius: 8px; box-shadow: 0 2px 18px rgba(50,68,120,0.12); margin-bottom: 10px;">
+          <div style="color: #4a4a4a; font-size: 1.07em; margin-top: 5px;">Automatic Mosaic (Set 3)</div>
+        </div>
+      </div>
+      <!-- Set 3 description -->
+      <div style="color: #444; font-size: 1.15em; margin-top: 4px; max-width: 760px; margin-left: auto; margin-right: auto;">
+        <b>Set 3:</b>
       </div>
     </div>
   </div>
