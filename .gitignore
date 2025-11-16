@@ -13,3 +13,4 @@ proj3/**/*.py
 **/*.tiff
 **/*.TIFF
 nerf/datasets/**/*.npz
+nerf/**/ARCHITECTURE_DIAGRAM.md
