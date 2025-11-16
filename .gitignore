@@ -1,1 +1,15 @@
 proj3/**/*.py
+# Ignore all images (jpg, png, jpeg, bmp, gif, tiff) in all directories and subdirectories
+**/*.jpg
+**/*.JPG
+**/*.jpeg
+**/*.JPEG
+**/*.png
+**/*.PNG
+**/*.bmp
+**/*.BMP
+**/*.gif
+**/*.GIF
+**/*.tiff
+**/*.TIFF
+nerf/datasets/**/*.npz
