@@ -17,25 +17,23 @@ def positional_encoding(x, L):
     # pe = torch.cat([x, torch.sin(2 * np.pi * x * (2 ** torch.arange(L).float()))], dim=1)
 
     x = x.view(-1, 1)  # Ensure shape (N, 1)
-    # Create frequency multipliers: [2^0, 2^1, ..., 2^(L-1)]
+
     frequencies = 2 ** torch.arange(L, dtype=torch.float32, device=x.device)
     
-    # Compute angles: 2π * x * frequencies
-    # Shape: (N, 1) * (L,) -> (N, L) via broadcasting
+
     angles = 2 * torch.pi * x * frequencies.unsqueeze(0)
     
-    # Compute sin and cos for each frequency
-    sin_terms = torch.sin(angles)  # Shape: (N, L)
-    cos_terms = torch.cos(angles)  # Shape: (N, L)
+    #sin and cos for each frequency
+    sin_terms = torch.sin(angles)  
+    cos_terms = torch.cos(angles) 
     
-    # Interleave sin and cos: [sin(2^0), cos(2^0), sin(2^1), cos(2^1), ...]
-    # Use torch.empty and fill in alternating pattern
+    #use torch.empty and fill in alternating pattern
     pe_terms = torch.empty(x.shape[0], 2 * L, device=x.device, dtype=x.dtype)
-    pe_terms[:, 0::2] = sin_terms  # Even indices: sin terms
-    pe_terms[:, 1::2] = cos_terms  # Odd indices: cos terms
+    pe_terms[:, 0::2] = sin_terms  
+    pe_terms[:, 1::2] = cos_terms  
     
-    # Concatenate original coordinate with encoded terms
-    pe = torch.cat([x, pe_terms], dim=1)  # Shape: (N, 1 + 2*L)
+ 
+    pe = torch.cat([x, pe_terms], dim=1)  
     
     return pe
 

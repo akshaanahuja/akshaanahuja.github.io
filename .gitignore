@@ -14,3 +14,4 @@ proj3/**/*.py
 **/*.TIFF
 nerf/datasets/**/*.npz
 nerf/**/ARCHITECTURE_DIAGRAM.md
+model_iter_1000.pt
