@@ -13,7 +13,9 @@ proj3/**/*.py
 **/*.tiff
 **/*.TIFF
 nerf/datasets/**/*.npz
+nerf/part2/datasets/**/*.npz
 nerf/**/ARCHITECTURE_DIAGRAM.md
+nerf/**/checkpoints/**/*.pth
 model_iter_1000.pt
 // INSERT_YOUR_CODE
 !nerf/**/*.jpg
