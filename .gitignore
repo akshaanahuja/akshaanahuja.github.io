@@ -15,3 +15,16 @@ proj3/**/*.py
 nerf/datasets/**/*.npz
 nerf/**/ARCHITECTURE_DIAGRAM.md
 model_iter_1000.pt
+// INSERT_YOUR_CODE
+!nerf/**/*.jpg
+!nerf/**/*.JPG
+!nerf/**/*.jpeg
+!nerf/**/*.JPEG
+!nerf/**/*.png
+!nerf/**/*.PNG
+!nerf/**/*.bmp
+!nerf/**/*.BMP
+!nerf/**/*.gif
+!nerf/**/*.GIF
+!nerf/**/*.tiff
+!nerf/**/*.TIFF
