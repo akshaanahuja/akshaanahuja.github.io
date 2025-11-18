@@ -257,12 +257,10 @@ def train_3d_nerf(images_train = images_train,
     val_psnrs = []  # Validation PSNRs
     val_iterations = []  # Iterations where validation was run
 
-    checkpoint_iters = [0, 200, 400, 600, 800]
-    
     # For visualization - render ONE test camera at 4 training checkpoints
     test_camera_idx = 0  # Always use the same test camera
     test_render_checkpoints = []  # Store (iteration, rendered_image) tuples
-    test_render_iterations = [0, 250, 500, 750, 1000]  # 4-5 checkpoints during training
+    test_render_iterations = [1000, 3000, 7000, 10000]  # 4 checkpoints during training
 
     os.makedirs(save_dir, exist_ok = True) #create save directory if it doesnt exist
 
@@ -271,7 +269,7 @@ def train_3d_nerf(images_train = images_train,
     # NeRF training parameters
     near = 2.0
     far = 6.0
-    N_samples = 32  # Number of points to sample along each ray
+    N_samples = 64  # Number of points to sample along each ray
 
     for iteration, batch in pbar:
         if iteration >= num_iterations:
@@ -339,17 +337,10 @@ def train_3d_nerf(images_train = images_train,
         psnr = compute_psnr(loss_value)
         psnrs.append(psnr)
 
-        #logging information and validation
-        if (iteration + 1) % log_interval == 0:
-            avg_loss = running_loss / log_interval
-            avg_psnr = np.mean(psnrs[-log_interval:])
-            running_loss = 0.0
-            
-            print(f"\nIteration {iteration+1}/{num_iterations}")
-            print(f"  Train Loss: {avg_loss:.6f} | Train PSNR: {avg_psnr:.2f} dB")
-            
-            # Validation
+        # Validation (every 500 iterations)
+        if (iteration + 1) % 500 == 0:
             if images_val is not None and c2ws_val is not None:
+                print(f"\n[Validation at Iteration {iteration+1}]")
                 print("  Running validation...")
                 val_psnr_mean, val_psnr_list = evaluate_validation(
                     model, K, images_val, c2ws_val, device, near, far, N_samples=64
@@ -357,19 +348,29 @@ def train_3d_nerf(images_train = images_train,
                 val_psnrs.append(val_psnr_mean)
                 val_iterations.append(iteration + 1)
                 print(f"  Val PSNR: {val_psnr_mean:.2f} dB (on {len(images_val)} images)")
+                print()
+        
+        # Render test camera view at specific checkpoints (for progressive visualization)
+        if c2ws_test is not None and (iteration + 1) in test_render_iterations:
+            print(f"\n[Rendering Test Camera at Iteration {iteration+1}]")
+            test_image = render_image_from_camera(
+                model, K, c2ws_test[test_camera_idx], H, W, device, near, far, N_samples=64
+            )
+            test_render_checkpoints.append((iteration + 1, test_image))
             
-            # Render test camera view at specific checkpoints (for progressive visualization)
-            if c2ws_test is not None and (iteration + 1) in test_render_iterations:
-                print("  Rendering test camera view...")
-                test_image = render_image_from_camera( #using our inference script. 
-                    model, K, c2ws_test[test_camera_idx], H, W, device, near, far, N_samples=32
-                )
-                test_render_checkpoints.append((iteration + 1, test_image))
-                
-                # Save individual test render
-                test_render_path = os.path.join(save_dir, f"test_render_iter_{iteration+1}.jpg")
-                plt.imsave(test_render_path, np.clip(test_image, 0, 1), format='jpg', dpi=150)
-                print(f"  Test render saved: {test_render_path}")
+            # Save individual test render
+            test_render_path = os.path.join(save_dir, f"test_render_iter_{iteration+1}.jpg")
+            plt.imsave(test_render_path, np.clip(test_image, 0, 1), format='jpg', dpi=150)
+            print(f"  Test render saved: {test_render_path}")
+            print()
+        
+        #logging information
+        if (iteration + 1) % log_interval == 0:
+            avg_loss = running_loss / log_interval
+            avg_psnr = np.mean(psnrs[-log_interval:])
+            running_loss = 0.0
+            
+            print(f"Iteration {iteration+1}/{num_iterations} | Train Loss: {avg_loss:.6f} | Train PSNR: {avg_psnr:.2f} dB")
             
             # Visualize rays and samples (only once, at first log interval)
             if iteration == 0 or (iteration + 1) == log_interval:
@@ -383,20 +384,7 @@ def train_3d_nerf(images_train = images_train,
                 visualize_rays_and_samples(
                     ray_o_viz, ray_d_viz, points_viz, c2ws_train, K, H, W, viz_path, max_rays=100
                 )
-            
-            # Save checkpoint
-            if (iteration + 1) in checkpoint_iters or (iteration + 1) == num_iterations:
-                checkpoint_path = os.path.join(save_dir, f"model_iter_{iteration+1}.pt")
-                torch.save({
-                    'iteration': iteration+1,
-                    'model_state_dict': model.state_dict(),
-                    'optimizer_state_dict': optimizer.state_dict(),
-                    'loss': loss_value,
-                    'val_psnr': val_psnrs[-1] if val_psnrs else None,
-                }, checkpoint_path)
-                print(f"  Checkpoint saved: {checkpoint_path}")
-            
-            print()  # Empty line for readability
+                print()
     
     # Final visualizations after training
     print("\n" + "=" * 60)
@@ -453,7 +441,7 @@ if __name__ == "__main__":
     c2ws_val = c2ws_val,
     c2ws_test = c2ws_test,
     focal = focal,
-    num_iterations = 1000,
+    num_iterations = 10000,
     num_rays_to_sample = 10000,
     learning_rate = 5e-4,
     L_x = 10,
