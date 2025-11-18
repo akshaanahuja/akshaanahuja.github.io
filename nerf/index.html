@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeRF Project - Akshaan Ahuja</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #e0e0e0;
+      background: linear-gradient(to bottom, #1a1a2e, #16213e, #0f0f1e);
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: #1e1e2e;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+      border: 1px solid #2d2d44;
+    }
+
+    h1 {
+      color: #64b5f6;
+      border-bottom: 3px solid #42a5f5;
+      padding-bottom: 10px;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+    }
+
+    h2 {
+      color: #90caf9;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      font-size: 2em;
+      border-left: 5px solid #42a5f5;
+      padding-left: 15px;
+    }
+
+    h3 {
+      color: #b0bec5;
+      margin-top: 25px;
+      margin-bottom: 15px;
+      font-size: 1.5em;
+    }
+
+    p {
+      margin-bottom: 15px;
+      text-align: justify;
+      font-size: 1.1em;
+      color: #d0d0d0;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 30px;
+      margin: 20px 0;
+    }
+
+    .image-container {
+      text-align: center;
+    }
+
+    .image-container img {
+      max-width: 100%;
+      width: 100%;
+      height: auto;
+      border: 2px solid #3d3d5c;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+      margin-bottom: 10px;
+      background: #2a2a3e;
+    }
+
+    .image-container p {
+      font-size: 0.9em;
+      color: #a0a0a0;
+      font-style: italic;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+      margin: 20px 0;
+    }
+
+    .results-grid img {
+      width: 100%;
+      height: auto;
+      border: 2px solid #3d3d5c;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+      background: #2a2a3e;
+      min-height: 400px;
+      object-fit: contain;
+    }
+
+    .architecture-box {
+      background: #252538;
+      border-left: 4px solid #42a5f5;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 5px;
+      border: 1px solid #3d3d5c;
+    }
+
+    .architecture-box ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .architecture-box li {
+      padding: 8px 0;
+      border-bottom: 1px solid #3d3d5c;
+      color: #d0d0d0;
+    }
+
+    .architecture-box li:last-child {
+      border-bottom: none;
+    }
+
+    .architecture-box strong {
+      color: #90caf9;
+      display: inline-block;
+      min-width: 200px;
+    }
+
+    .full-width {
+      width: 100%;
+      margin: 20px 0;
+    }
+
+    .full-width img {
+      width: 100%;
+      height: auto;
+      border: 2px solid #3d3d5c;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+      background: #2a2a3e;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Neural Radiance Fields</h1>
+    <p style="font-size: 1.2em; color: #b0bec5; margin-bottom: 30px;">
+      This project implements a complete NeRF pipeline from camera calibration to 3D scene reconstruction, 
+      including 2D image reconstruction and rendering 3D novel views.
+    </p>
+
+    <h2>ArUco Tag Camera Calibration</h2>
+    
+    <div class="image-grid">
+      <div class="image-container">
+        <img src="part0/results/camcloudimg1.png" alt="Camera Frustum Visualization 1">
+        <p>Camera Frustum Visualization 1</p>
+      </div>
+      <div class="image-container">
+        <img src="part0/results/camcloudimg2.png" alt="Camera Frustum Visualization 2">
+        <p>Camera Frustum Visualization 2</p>
+      </div>
+    </div>
+
+    <p>
+      Detecting ArUco tags is essential in NeRF for camera calibration and pose estimation. 
+      By detecting known ArUco markers in calibration images, we can compute the camera's intrinsic parameters 
+      (focal length, principal point, distortion coefficients) which are required for accurate 3D reconstruction. 
+      Additionally, ArUco tags serve as reference points in object images, allowing us to estimate the camera's 
+      extrinsic parameters (position and orientation) relative to the scene, which are necessary for converting 
+      pixel coordinates to 3D rays during NeRF training.
+    </p>
+
+    <h2>2D NeRF - Image Reconstruction</h2>
+
+    <h3>Model Architecture</h3>
+    <div class="architecture-box">
+      <ul>
+        <li><strong>Network Type:</strong> Multilayer Perceptron (MLP)</li>
+        <li><strong>Input:</strong>Normalized 2D pixel coordinates (x, y)</li>
+        <li><strong>Positional Encoding:</strong>Locational encoding with L = 10 frequency levels using Sin and Cos functions</li>
+        <li><strong>PE Output Dimension:</strong> 42 (21 per coordinate: 1 original + 20 encoded terms)</li>
+        <li><strong>Hidden Layers:</strong> 3 fully connected layers</li>
+        <li><strong>Layer Width:</strong> 256 neurons per hidden layer</li>
+        <li><strong>Activation:</strong> ReLU for hidden layers, Sigmoid for output</li>
+        <li><strong>Output:</strong> 3D RGB color values in [0, 1]</li>
+        <li><strong>Total Parameters:</strong> ~200,000</li>
+        <li><strong>Loss Function:</strong> Mean Squared Error (MSE)</li>
+        <li><strong>Optimizer:</strong> Adam</li>
+        <li><strong>Learning Rate:</strong> 1e-2 (0.01)</li>
+        <li><strong>Training Iterations:</strong> 2000</li>
+        <li><strong>Batch Size:</strong> 10,000 pixels per iteration</li>
+      </ul>
+    </div>
+
+    <h3>Training Progression</h3>
+    <p>
+      The following visualizations show how the model progressively learns to reconstruct images 
+      throughout training at different checkpoint iterations (0, 500, 1000, 1500, 2000). For my custom image, I tried to pick an image with really high frequencies and vibrant colors to see the strength of the network and the positional encoding layer at work
+    </p>
+
+    <div class="image-grid" style="gap: 48px; margin-bottom: 16px;">
+      <div class="image-container" style="max-width:800px; width:100%;">
+        <img 
+          src="part1/results/L10_width256/image_at_different_checkpoints.png"
+          alt="Test Image Training Progression"
+          style="width: 100%; max-width: 800px; border-radius: 12px; box-shadow: 0 2px 24px rgba(100,180,246,0.15);"
+        >
+        <p style="font-size:1.15em; margin-top:8px;">Training Progression - Test Image</p>
+      </div>
+      <div class="image-container" style="max-width:800px; width:100%;">
+        <img 
+          src="part1/results/my_image/image_at_different_checkpoints.png"
+          alt="Custom Image Training Progression"
+          style="width: 100%; max-width: 800px; border-radius: 12px; box-shadow: 0 2px 24px rgba(100,180,246,0.15);"
+        >
+        <p style="font-size:1.15em; margin-top:8px;">Training Progression - Custom Image</p>
+      </div>
+    </div>
+
+    <h3>Hyperparameter Comparison: Final Results</h3>
+    <p>
+      The following 2×2 grid compares the final reconstruction quality across different combinations 
+      of positional encoding frequency levels (L=5 vs L=10) and network width (128 vs 256 neurons).
+    </p>
+
+    <div class="results-grid">
+      <div class="image-container">
+        <img src="part1/results/L5_width128/reconstruction.png" alt="L=5, Width=128">
+        <p>L=5, Width=128</p>
+      </div>
+      <div class="image-container">
+        <img src="part1/results/L5_width256/reconstruction.png" alt="L=5, Width=256">
+        <p>L=5, Width=256</p>
+      </div>
+      <div class="image-container">
+        <img src="part1/results/L10_width128/reconstruction.png" alt="L=10, Width=128">
+        <p>L=10, Width=128</p>
+      </div>
+      <div class="image-container">
+        <img src="part1/results/L10_width256/reconstructed_L10_256.png" alt="L=10, Width=256">
+        <p>L=10, Width=256</p>
+      </div>
+    </div>
+
+    <h3>Training Metrics: PSNR Curve</h3>
+    <p>
+      The Peak Signal-to-Noise Ratio (PSNR) curve shows the model's reconstruction quality improving 
+      over training iterations. Higher PSNR values indicate better image reconstruction fidelity.
+    </p>
+
+    <div class="full-width">
+      <img src="part1/results/my_image/training_curves.png" alt="Training PSNR Curve">
+    </div>
+
+    <h2>3D NeRF - Novel View Synthesis</h2>
+
+    <h3>Implementation Overview</h3>
+    <p>
+      The 3D NeRF implementation consists of several modular components that work together to learn a 3D scene representation 
+      from multi-view images. Each component plays a specific role in the NeRF pipeline:
+    </p>
+
+    <div class="architecture-box">
+      <ul>
+        <li><strong>helper_funcs.py:</strong> Contains core geometric transformations for 3D NeRF. Implements camera-to-world coordinate conversion, pixel-to-ray generation, and point sampling along rays. These functions convert 2D pixel coordinates into 3D rays that probe the scene, which is fundamental to the ray-casting approach used in NeRF.</li>
+        
+        <li><strong>dataloader.py:</strong> Implements the PyTorch DataLoader for 3D NeRF training. Randomly samples rays from multiple training images, converts them to ray origins and directions, and returns corresponding ground truth pixel colors. This enables efficient batch processing during training.</li>
+        
+        <li><strong>volume_rendering.py:</strong> Implements the volumetric rendering equation using alpha compositing. Takes densities and RGB values sampled along rays and composites them into final pixel colors using transmittance and opacity calculations. This is the differentiable rendering step that allows end-to-end training.</li>
+        
+        <li><strong>train.py:</strong> Orchestrates the complete training pipeline. Manages model initialization, data loading, training loop with volume rendering, loss computation, backpropagation, and validation. Also handles test camera rendering at specific checkpoints to visualize training progress.</li>
+        
+        <li><strong>inference.py:</strong> Provides inference utilities for rendering novel views. Loads trained models and renders full images from test camera poses. Can create spherical rendering videos by rendering all test cameras sequentially, demonstrating the model's ability to synthesize novel viewpoints.</li>
+      </ul>
+    </div>
+
+    <h3>Ray Visualization: Understanding Ray Casting</h3>
+    <p>
+      In 3D NeRF, rays originate from the camera center and shoot through each pixel into the 3D scene. Each ray represents 
+      a line of sight from the camera through a specific pixel. Along each ray, we sample 3D points and query the neural network 
+      to determine the color and density at those locations. The following visualizations show how rays emanate from camera positions 
+      and how points are sampled along these rays to probe the 3D scene.
+    </p>
+
+    <div class="vertical-image-stack">
+      <div class="image-container">
+        <img src="part2/all_camera_rays.png" alt="All Camera Rays Visualization">
+        <p>Camera Frustums and Ray Visualization</p>
+      </div>
+      <div class="image-container">
+        <img src="part2/ray_and_sample1.png" alt="Ray and Sample Visualization 1">
+        <p>Rays and Sampled Points (View 1)</p>
+      </div>
+      <div class="image-container">
+        <img src="part2/ray_and_sample2.png" alt="Ray and Sample Visualization 2">
+        <p>Rays and Sampled Points (View 2)</p>
+      </div>
+    </div>
+    <style>
+      .vertical-image-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+      .vertical-image-stack .image-container {
+        text-align: center;
+      }
+      .vertical-image-stack img {
+        max-width: 700px;
+        width: 100%;
+        height: auto;
+        border-radius: 7px;
+        box-shadow: 0 2px 16px rgba(60,68,120,0.13);
+      }
+      .vertical-image-stack p {
+        color: #b3b3b3;
+        font-size: 1.05em;
+        margin-top: 5px;
+      }
+    </style>
+
+    <p>
+      The rays originate from the camera center (the origin of each camera frustum) and extend into the scene. 
+      Along each ray, we sample multiple 3D points between the near and far planes. The neural network is queried 
+      at each of these points to predict RGB colors and densities. These predictions are then composited using volume 
+      rendering to produce the final pixel color, allowing the model to learn the 3D structure and appearance of the scene.
+    </p>
+
+    <h3>Training Progression: Test Camera Inference</h3>
+    <p>
+      During training, we periodically render a held-out test camera view to visualize how the model's reconstruction 
+      improves over iterations. This intermediate inference step uses the current model weights to render a full image 
+      from a test camera pose that was never seen during training. The progression shows the model gradually learning 
+      to reconstruct the 3D scene, starting from a blurry approximation and refining details as training progresses.
+    </p>
+
+    <div class="full-width">
+      <img src="part2/3dnerf_results/test_camera_progressive_reconstruction.jpg" alt="Test Camera Progressive Reconstruction">
+    </div>
+
+    <h3>Spherical Rendering: Novel View Synthesis</h3>
+    <p>
+      After training, we can render novel views from any camera position. The spherical rendering demonstrates the model's 
+      ability to synthesize views from test cameras arranged in a spherical pattern around the object. This showcases the 
+      complete 3D scene representation learned by the NeRF model. I trained my NeRF for 10,000 iterations, sample 10,000 rays over all the images per iteration. I used a learning rate of 5e-4 and a positional encoding frequency level of 10 for the xyz coords and 4 for the ray directions. (I rented a GPU)
+    </p>
+
+    <h3>Training Metrics: Validation PSNR</h3>
+    <p>
+      The validation PSNR curve tracks the model's reconstruction quality on held-out validation images (set of 6 images) throughout training.
+    </p>
+
+    <div class="full-width">
+      <img src="part2/3dnerf_results/psnr.png" alt="Validation PSNR Curve">
+    </div>
+
+    <div class="full-width" style="text-align: center;">
+      <img src="part2/3dnerf_results/spherical_rendering.gif" alt="Spherical Rendering Animation" style="max-width: 800px; width: 100%; height: auto;">
+      <p style="margin-top: 10px; font-style: italic; color: #a0a0a0;">Spherical Rendering: Novel Views Around the Lego Object</p>
+      <p style="margin-top: 15px; color: #d0d0d0;">
+        The training PSNR steadily increased throughout the 10,000 iterations, indicating that the model was successfully 
+        learning to reconstruct the 3D scene with increasing fidelity. After completing 10,000 iterations of training, 
+        the model achieved a validation PSNR of 27.76 dB, demonstrating strong generalization to unseen camera viewpoints 
+        and validating the effectiveness of the learned 3D scene representation.
+      </p>
+    </div>
+
+    <h3>Volumetric Rendering Explained</h3>
+    <p>
+      Volumetric rendering is the process of compositing colors and opacities along a ray to produce a final pixel color. 
+      The key insight is that we sample multiple 3D points along each ray, and each point contributes to the final color 
+      based on its density (opacity) and how much light reaches it (transmittance). 
+    </p>
+    <p>
+      The process works as follows: (1) Convert density values to opacity (alpha) using the exponential function, 
+      (2) Compute transmittance (the probability that light reaches each point without being blocked), 
+      (3) Calculate weights for each point as the product of transmittance and opacity, and 
+      (4) Take a weighted sum of RGB colors along the ray. This differentiable rendering process allows gradients 
+      to flow back through the rendering step to update the neural network weights, enabling the model to learn 
+      the 3D scene representation from 2D images.
+    </p>
+
+  </div>
+</body>
+</html>
+
