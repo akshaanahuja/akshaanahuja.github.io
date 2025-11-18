@@ -30,3 +30,5 @@ model_iter_1000.pt
 !nerf/**/*.GIF
 !nerf/**/*.tiff
 !nerf/**/*.TIFF
+nerf/calibration_images/
+nerf/calibration_images/images/**.jpg
