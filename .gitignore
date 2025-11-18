@@ -18,17 +18,15 @@ nerf/**/ARCHITECTURE_DIAGRAM.md
 nerf/**/checkpoints/**/*.pth
 model_iter_1000.pt
 // INSERT_YOUR_CODE
-!nerf/**/*.jpg
-!nerf/**/*.JPG
-!nerf/**/*.jpeg
-!nerf/**/*.JPEG
-!nerf/**/*.png
-!nerf/**/*.PNG
-!nerf/**/*.bmp
-!nerf/**/*.BMP
-!nerf/**/*.gif
-!nerf/**/*.GIF
-!nerf/**/*.tiff
-!nerf/**/*.TIFF
+# Allow only images referenced in nerf/index.html
+!nerf/part0/results/*.png
+!nerf/part1/results/**/*.png
+!nerf/part1/results/**/*.jpg
+!nerf/part2/all_camera_rays.png
+!nerf/part2/ray_and_sample*.png
+!nerf/part2/3dnerf_results/*.png
+!nerf/part2/3dnerf_results/*.jpg
+!nerf/part2/3dnerf_results/*.gif
+# Ignore calibration images and other non-referenced images
 nerf/calibration_images/
-nerf/calibration_images/images/**.jpg
+nerf/mouse_images/
