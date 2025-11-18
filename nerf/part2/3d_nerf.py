@@ -43,11 +43,11 @@ def positional_encoding(x, L):
         pe_list.append(pe_d)
     
     # Concatenate all dimensions
-    pe = torch.cat(pe_list, dim=1)  # (N, D * (1 + 2*L))
+    pe = torch.cat(pe_list, dim = 1)  #(N, D * (1 + 2*L))
     return pe
 
 class NeRF3D(nn.Module):
-    def __init__(self, L_x=10, L_rd=4):
+    def __init__(self, L_x = 10, L_rd = 4):
         super(NeRF3D, self).__init__()
         self.L_x = L_x  # Positional encoding levels for coordinates
         self.L_rd = L_rd  # Positional encoding levels for ray directions
@@ -129,7 +129,7 @@ class NeRF3D(nn.Module):
         x = self.block4(x)  # (N, 256)
         
         # Skip connection: concat original pe_x with output
-        x = torch.cat([x, pe_x], dim=1)  # (N, 256 + pe_dim_x)
+        x = torch.cat([x, pe_x], dim = 1)  # (N, 256 + pe_dim_x)
         
         # Main MLP branch: next 4 blocks
         x = self.block5(x)  # (N, 256)
